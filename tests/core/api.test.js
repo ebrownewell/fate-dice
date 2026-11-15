@@ -79,6 +79,12 @@ describe("createApi", () => {
     });
   });
 
+  it("nominates another character with a reason", async () => {
+    const { bus, api } = setup();
+    await api.nominate(fakeActor("b"), "Held the door");
+    expect(bus.request).toHaveBeenCalledWith("nominate", { actorId: "b", reason: "Held the door" });
+  });
+
   it("fates a chat message, given as a document or an id", async () => {
     const { bus, api } = setup();
     await api.fateReroll({ id: "m1" });

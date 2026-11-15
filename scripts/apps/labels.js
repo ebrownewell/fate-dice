@@ -39,6 +39,30 @@ export const PANEL_KEYS = [
   "FATEDICE.Panel.Session",
 ];
 
+export const NOMINATION_KEYS = [
+  "FATEDICE.Settings.NominationMode.Off",
+  "FATEDICE.Settings.NominationMode.Gm",
+  "FATEDICE.Settings.NominationMode.Vote",
+  "FATEDICE.Nomination.Card",
+  "FATEDICE.Nomination.AwardReason",
+  "FATEDICE.Nomination.Yes",
+  "FATEDICE.Nomination.No",
+  "FATEDICE.Nomination.Approve",
+  "FATEDICE.Nomination.Deny",
+  "FATEDICE.Nomination.Finalize",
+  "FATEDICE.Nomination.Pending",
+  "FATEDICE.Nomination.Tally",
+  "FATEDICE.Nomination.Approved",
+  "FATEDICE.Nomination.Rejected",
+  "FATEDICE.Nomination.NobodyToNominate",
+  "FATEDICE.Nomination.Title",
+  "FATEDICE.Nomination.Intro",
+  "FATEDICE.Nomination.Who",
+  "FATEDICE.Nomination.Why",
+  "FATEDICE.Nomination.Send",
+  "FATEDICE.Nomination.Button",
+];
+
 export const SHOP_KEYS = [
   "FATEDICE.Shop.Title",
   "FATEDICE.Shop.Open",

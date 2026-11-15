@@ -4,7 +4,7 @@ import { CLIENT_SETTING_DEFINITIONS, SETTING_DEFINITIONS } from "../scripts/core
 import { ERROR_CODES } from "../scripts/core/errors.js";
 import { CHAT_LABEL_KEYS } from "../scripts/foundry/chatHooks.js";
 import { LOG_LABEL_KEYS } from "../scripts/ui/logRows.js";
-import { LOG_APP_KEYS, PANEL_KEYS, SHOP_KEYS } from "../scripts/apps/labels.js";
+import { LOG_APP_KEYS, NOMINATION_KEYS, PANEL_KEYS, SHOP_KEYS } from "../scripts/apps/labels.js";
 
 const en = JSON.parse(readFileSync(new URL("../lang/en.json", import.meta.url), "utf8"));
 
@@ -29,7 +29,7 @@ describe("English translations", () => {
     expect(lookup(key)).toEqual(expect.any(String));
   });
 
-  it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS, ...PANEL_KEYS, ...SHOP_KEYS])(
+  it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS, ...PANEL_KEYS, ...SHOP_KEYS, ...NOMINATION_KEYS])(
     "has label %s",
     (key) => {
       expect(lookup(key)).toEqual(expect.any(String));

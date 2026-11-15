@@ -152,6 +152,7 @@ describe("GM panel", () => {
     await expect.poll(panelRows).toEqual([
       { name: "Player A Hero", owners: "Player A", count: "1 / 3" },
       { name: "Player B Hero", owners: "Player B", count: "1 / 3" },
+      { name: "Player C Hero", owners: "Player C", count: expect.stringMatching(/^\d \/ 3$/) },
     ]);
   });
 

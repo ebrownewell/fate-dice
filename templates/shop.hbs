@@ -4,6 +4,9 @@
       {{#each dots}}<span class="fate-dice-dot{{#if this}} filled{{/if}}"></span>{{/each}}
     </span>
     <span class="fate-dice-shop-balance">{{points}} / {{max}}</span>
+    {{#if canNominate}}
+      <button type="button" data-action="nominate"><i class="fa-solid fa-award"></i> {{localize "FATEDICE.Nomination.Button"}}</button>
+    {{/if}}
     <button type="button" data-action="history"><i class="fa-solid fa-clock-rotate-left"></i> {{localize "FATEDICE.Shop.History"}}</button>
   </header>
   <ul class="fate-dice-shop-items">

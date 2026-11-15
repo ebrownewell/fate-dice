@@ -302,3 +302,39 @@
   border-left: 3px solid var(--color-warm-2, #c9593f);
   font-style: italic;
 }
+
+/* Nominations */
+
+.fate-dice-nomination blockquote {
+  margin: 0.25rem 0 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--color-warm-2, #c9593f);
+  font-style: italic;
+}
+
+.fate-dice-nomination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+
+.fate-dice-nomination-controls button {
+  width: auto;
+  padding: 0 0.6rem;
+}
+
+.fate-dice-nomination-controls button.active {
+  font-weight: bold;
+  box-shadow: 0 0 0 2px var(--color-warm-2, #c9593f) inset;
+}
+
+.fate-dice-nomination-tally {
+  flex: 1;
+  font-size: var(--font-size-12, 12px);
+}
+
+.fate-dice-nomination-status {
+  font-weight: bold;
+}

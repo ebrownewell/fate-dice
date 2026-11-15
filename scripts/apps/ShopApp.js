@@ -23,7 +23,7 @@ export class ShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["fate-dice", "fate-dice-shop-app"],
     window: { icon: "fa-solid fa-dice-d20", resizable: true },
     position: { width: 480, height: 560 },
-    actions: { buy: ShopApp.#onBuy, history: ShopApp.#onHistory },
+    actions: { buy: ShopApp.#onBuy, history: ShopApp.#onHistory, nominate: ShopApp.#onNominate },
   };
 
   static PARTS = {
@@ -93,6 +93,7 @@ export class ShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       max,
       dots: model.visible && model.mode === "player" ? model.dots : [],
       items,
+      canNominate: !game.user.isGM && game.settings.get(MODULE_ID, "nominationMode") !== "off",
       reroll: game.settings.get(MODULE_ID, "rerollEnabled")
         ? { cost: game.settings.get(MODULE_ID, "rerollCost") }
         : null,
@@ -137,6 +138,11 @@ export class ShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     if (note === null || note === undefined) return;
     await this.api.purchase(this.actor, item.id, note).catch(notifyError);
+  }
+
+  /** @this {ShopApp} */
+  static #onNominate() {
+    this.api.openNominate();
   }
 
   /** @this {ShopApp} */

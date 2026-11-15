@@ -37,6 +37,17 @@
       "ShowHud": {
         "Name": "Show Fate Dice HUD",
         "Hint": "Show your character's Fate Dice on screen (GMs: a button for the Fate Dice panel). Drag it to move it."
+      },
+      "NominationMode": {
+        "Name": "Nominations",
+        "Hint": "Let players nominate another player's character for a Fate Die, approved by the GM or by a majority vote of the players online.",
+        "Off": "Off",
+        "Gm": "GM approves",
+        "Vote": "Players vote"
+      },
+      "NominationLimit": {
+        "Name": "Nominations per player per session",
+        "Hint": "How many nominations each player can make each session (0 for no limit)."
       }
     },
     "Errors": {
@@ -51,7 +62,8 @@
       "not-fateable": "That roll can't be fated.",
       "limit-reached": "You've reached the limit for that.",
       "note-required": "That needs a note explaining it.",
-      "at-max": "That character already has the maximum Fate Dice."
+      "at-max": "That character already has the maximum Fate Dice.",
+      "disabled": "That's turned off."
     },
     "Chat": {
       "Reroll": "Fate Reroll",
@@ -178,6 +190,26 @@
       "MenuName": "Fate Dice shop",
       "MenuLabel": "Edit shop",
       "MenuHint": "Choose what players can spend Fate Dice on, and import or export shop files."
+    },
+    "Nomination": {
+      "Card": "{nominator} nominates {actor} for a Fate Die",
+      "AwardReason": "Nominated by {name}",
+      "Yes": "Yes",
+      "No": "No",
+      "Approve": "Approve",
+      "Deny": "Deny",
+      "Finalize": "Accept result now",
+      "Pending": "Waiting for the GM",
+      "Tally": "{yes} yes, {no} no ({eligible} voting)",
+      "Approved": "Approved: +1 Fate Die",
+      "Rejected": "Not approved",
+      "NobodyToNominate": "There's nobody else to nominate.",
+      "Title": "Nominate for a Fate Die",
+      "Intro": "Nominate another player's character for a Fate Die.",
+      "Who": "Character",
+      "Why": "Why do they deserve it?",
+      "Send": "Nominate",
+      "Button": "Nominate…"
     }
   }
 }

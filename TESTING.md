@@ -48,4 +48,8 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] Importing a real shared file shows a sensible preview; warnings are readable.
 - [ ] The purchase announcement in chat looks right, with and without a note.
 
-<!-- Add sections as features land: nominations. -->
+### Nominations
+
+- [ ] The nominate dialog lists the right characters and reads clearly.
+- [ ] Nomination cards (pending, approved, rejected; GM and vote modes) read well in both themes.
+- [ ] Voting feels responsive with several players online.

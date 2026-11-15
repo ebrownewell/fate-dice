@@ -20,6 +20,11 @@ import { registerQuenchTests } from "./quench.js";
 import { ShopApp, getShopItems } from "./apps/ShopApp.js";
 import { ShopEditorApp } from "./apps/ShopEditorApp.js";
 import { createPurchaseHandler, registerShopHooks, registerShopMenu } from "./foundry/shopHooks.js";
+import {
+  createFoundryNominationService,
+  openNominateDialog,
+  registerNominationHooks,
+} from "./foundry/nominationHooks.js";
 
 Hooks.once("init", () => {
   registerSettings(game.settings, MODULE_ID);
@@ -37,6 +42,7 @@ Hooks.once("ready", () => {
     getShopItems,
   });
   const reroll = createFateRerollHandler(createFoundryFateRerollDeps({ service }));
+  const nominations = createFoundryNominationService({ fateService: service });
 
   const bus = createRequestBus({
     socket: game.socket,
@@ -50,6 +56,10 @@ Hooks.once("ready", () => {
       refund: service.refund,
       fateReroll: reroll.fateReroll,
       purchase: createPurchaseHandler(service),
+      nominate: nominations.nominate,
+      vote: nominations.vote,
+      decide: nominations.decide,
+      finalize: nominations.finalize,
     },
   });
 
@@ -63,6 +73,8 @@ Hooks.once("ready", () => {
       ShopApp.show(typeof actor === "string" ? game.actors.get(actor) : actor, api),
     /** Open the GM's Fate Dice panel. */
     openPanel: () => GmPanelApp.show(api),
+    /** Ask the player whom to nominate for a Fate Die. */
+    openNominate: () => openNominateDialog({ api }),
     /** GM: open the shop editor. */
     openShopEditor: () => new ShopEditorApp().render({ force: true }),
   };
@@ -70,6 +82,7 @@ Hooks.once("ready", () => {
   registerSheetHooks({ api });
   registerHud({ api });
   registerShopHooks();
+  registerNominationHooks({ bus });
   game.modules.get(MODULE_ID).api = api;
   Hooks.callAll(`${MODULE_ID}.ready`, game.modules.get(MODULE_ID).api);
   // Messages already in the chat log rendered before the hooks existed.

@@ -26,7 +26,7 @@ None of this ships with the module, and CI can't run it (it needs a license).
 6. Run `~/foundry/start.sh`, open http://localhost:30001, enter your license key and accept the EULA.
 7. Create the world `fate-dice-dev` (dnd5e) and restart with `~/foundry/start.sh --world=fate-dice-dev`.
 8. `npm run foundry:setup`: enables the modules, creates a **Test GM** account for automation, and
-   creates Player A / Player B with characters (20 HP, a longsword). The first run joins as
+   creates Players A, B and C with characters (20 HP, a longsword). The first run joins as
    Gamemaster to create Test GM, so make sure nobody is logged in as Gamemaster then.
 
 Automation always joins as **Test GM**, so you can stay logged in as Gamemaster while tests run.

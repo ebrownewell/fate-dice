@@ -15,11 +15,27 @@ export const TEST_GM = "Test GM";
 /**
  * Open a browser, join the running world as the named user, and wait until
  * Foundry has finished loading.
- * @param {{ user?: string, password?: string, headless?: boolean }} [options]
+ * Tests don't need the game canvas, so it's off by default: rendering it in
+ * software made several headless browsers starve each other.
+ * @param {{ user?: string, password?: string, headless?: boolean, canvas?: boolean }} [options]
  */
-export async function joinWorld({ user = TEST_GM, password = "", headless = true } = {}) {
+export async function joinWorld({
+  user = TEST_GM,
+  password = "",
+  headless = true,
+  canvas = false,
+} = {}) {
   const browser = await chromium.launch({ headless });
   const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
+  if (!canvas) {
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem("core.noCanvas", "true");
+      } catch {
+        // Storage unavailable: the canvas just stays on.
+      }
+    });
+  }
   page.on("pageerror", (err) => console.error("[page error]", err.message));
 
   try {

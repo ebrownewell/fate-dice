@@ -4,7 +4,7 @@
 //
 // - enables Fate Dice and Quench
 // - creates a "Test GM" account for automation
-// - creates players "Player A" and "Player B" (no passwords; local dev only)
+// - creates players "Player A", "Player B" and "Player C" (no passwords; local dev only)
 // - gives each a dnd5e character with a longsword and 20 HP
 
 import { TEST_GM, joinWorld, waitForReady } from "./session.js";
@@ -30,7 +30,7 @@ const summary = await page.evaluate(async (testGm) => {
   if (!game.users.getName(testGm)) {
     await User.create({ name: testGm, role: CONST.USER_ROLES.GAMEMASTER, password: "" });
   }
-  const PLAYERS = ["Player A", "Player B"];
+  const PLAYERS = ["Player A", "Player B", "Player C"];
   for (const name of PLAYERS) {
     if (!game.users.getName(name)) {
       await User.create({ name, role: CONST.USER_ROLES.PLAYER, password: "" });

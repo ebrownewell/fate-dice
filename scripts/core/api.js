@@ -43,6 +43,9 @@ export function createApi({ bus }) {
     purchase: (actor, itemId, note = "") =>
       bus.request("purchase", { actorId: toId(actor), itemId, note }),
 
+    /** @param {ActorRef} actor Another player's character. @param {string} reason */
+    nominate: (actor, reason) => bus.request("nominate", { actorId: toId(actor), reason }),
+
     /** @param {{ id: string } | string} message A chat message with a d20 roll. */
     fateReroll: (message) =>
       bus.request("fateReroll", { messageId: typeof message === "string" ? message : message.id }),

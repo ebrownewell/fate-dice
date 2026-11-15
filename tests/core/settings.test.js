@@ -18,6 +18,8 @@ const DEFAULTS = {
   bonusAmount: 10,
   rerollOnInitiative: true,
   rerollOnDeathSaves: true,
+  nominationMode: "gm",
+  nominationLimit: 1,
 };
 
 describe("SETTING_DEFINITIONS", () => {
@@ -33,6 +35,10 @@ describe("SETTING_DEFINITIONS", () => {
       expect(def.scope).toBe("world");
       expect(def.config).toBe(true);
     }
+  });
+
+  it("offers nominations off, by GM approval, or by party vote", () => {
+    expect(Object.keys(SETTING_DEFINITIONS.nominationMode.choices)).toEqual(["off", "gm", "vote"]);
   });
 
   it("limits the bonus threshold to 1–19", () => {

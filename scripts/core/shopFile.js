@@ -30,6 +30,9 @@ export function exportShop({ name, items, settings }) {
  */
 function validSetting(def, value) {
   if (def.type === Boolean) return typeof value === "boolean";
+  if (def.type === String) {
+    return typeof value === "string" && (!def.choices || Object.hasOwn(def.choices, value));
+  }
   if (def.type !== Number || typeof value !== "number" || !Number.isInteger(value)) return false;
   return !def.range || (value >= def.range.min && value <= def.range.max);
 }

@@ -10,6 +10,7 @@ export const ERROR_CODES = /** @type {const} */ ([
   "limit-reached",
   "note-required",
   "at-max",
+  "disabled",
   "no-gm",
   "timeout",
   "unknown-action",

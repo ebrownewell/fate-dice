@@ -6,6 +6,12 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Nominations**: a player nominates another player's character (never their own) for a Fate Die, with a reason, from the shop's "Nominate…" button.
+  - Setting **Nominations**: off, **GM approves** (default), or **players vote**. Setting **Nominations per player per session** (default 1; 0 = unlimited).
+  - GM approval: the GM gets Approve / Deny on the chat card.
+  - Party vote: the players online when it's made vote, except the nominee's owner; the nominator counts as yes. It closes when everyone has voted and passes with a strict majority (ties fail). The GM can accept the result early, counting the votes so far.
+  - Approved nominees get +1 Fate Die, logged as "Nominated by …: reason". Refused when the nominee is already full.
+  - Each nomination lives on its chat card; votes and decisions are processed one at a time on the GM's client, so the nominee is awarded exactly once.
 - **Shop**: GM-defined things to spend Fate Dice on.
   - Items have a cost, a plain-text description, an optional per-purchase cost increase (resetting each session or never), an optional limit per session or campaign, and can require a note. **Flaws** grant Fate Dice instead (capped at the maximum).
   - Players open it from the HUD or the Fate Dice sheet button; it shows prices, limits used and why an item is unavailable. Buying asks for confirmation (and the note); the GM's client checks and applies it, posts it to chat and logs it ("Bought: …" / "Flaw: …"). Purchases can be refunded from the log, which also frees up their limit.

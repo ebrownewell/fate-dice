@@ -51,6 +51,24 @@ export const SETTING_DEFINITIONS = {
   },
   rerollOnInitiative: { ...i18n("RerollOnInitiative"), ...world, type: Boolean, default: true },
   rerollOnDeathSaves: { ...i18n("RerollOnDeathSaves"), ...world, type: Boolean, default: true },
+  nominationMode: {
+    ...i18n("NominationMode"),
+    ...world,
+    type: String,
+    default: "gm",
+    choices: {
+      off: "FATEDICE.Settings.NominationMode.Off",
+      gm: "FATEDICE.Settings.NominationMode.Gm",
+      vote: "FATEDICE.Settings.NominationMode.Vote",
+    },
+  },
+  nominationLimit: {
+    ...i18n("NominationLimit"),
+    ...world,
+    type: Number,
+    default: 1,
+    range: { min: 0, max: 10, step: 1 },
+  },
 };
 
 /** Per-player settings. */

@@ -107,6 +107,14 @@ describe("parseShopFile", () => {
     expect(result.warnings).toHaveLength(2);
   });
 
+  it("accepts a text setting only when it's one of the allowed choices", () => {
+    const good = parse({ ...valid, settings: { nominationMode: "vote" } });
+    expect(good.settings).toEqual({ nominationMode: "vote" });
+    const bad = parse({ ...valid, settings: { nominationMode: "anarchy" } });
+    expect(bad.settings).toEqual({});
+    expect(bad.warnings).toHaveLength(1);
+  });
+
   it("treats descriptions as plain text: HTML survives only as literal text", () => {
     const result = parse({
       ...valid,

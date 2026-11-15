@@ -55,6 +55,8 @@ fate.openPanel(); // GM: open the Fate Dice panel
 fate.openShop(actor); // open a character's shop
 fate.openShopEditor(); // GM: edit the shop, import/export
 await fate.purchase(actor, itemId, "note"); // buy a shop item (or take a flaw)
+await fate.nominate(actor, "reason"); // nominate another player's character
+fate.openNominate(); // open the nominate dialog
 ```
 
 Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject
