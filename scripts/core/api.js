@@ -28,5 +28,12 @@ export function createApi({ bus }) {
 
     /** @param {ActorRef} actor @param {number} value */
     setPoints: (actor, value) => bus.request("setPoints", { actorId: toId(actor), value }),
+
+    /** @param {ActorRef} actor @param {number} [amount] GM only. */
+    refund: (actor, amount = 1) => bus.request("refund", { actorId: toId(actor), amount }),
+
+    /** @param {{ id: string } | string} message A chat message with a d20 roll. */
+    fateReroll: (message) =>
+      bus.request("fateReroll", { messageId: typeof message === "string" ? message : message.id }),
   };
 }

@@ -22,6 +22,7 @@ export default [
         quench: "readonly",
         Combat: "readonly",
         ChatMessage: "readonly",
+        Roll: "readonly",
       },
     },
   },

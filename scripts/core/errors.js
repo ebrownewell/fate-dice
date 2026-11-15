@@ -6,6 +6,7 @@ export const ERROR_CODES = /** @type {const} */ ([
   "insufficient-points",
   "not-permitted",
   "not-found",
+  "not-fateable",
   "no-gm",
   "timeout",
   "unknown-action",

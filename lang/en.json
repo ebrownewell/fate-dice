@@ -39,11 +39,19 @@
       "invalid": "That isn't a valid amount.",
       "insufficient-points": "Not enough Fate Dice.",
       "not-permitted": "You don't have permission to do that.",
-      "not-found": "That character couldn't be found.",
+      "not-found": "That couldn't be found. It may have been deleted.",
       "no-gm": "A GM must be connected to spend or award Fate Dice.",
       "timeout": "The GM didn't respond in time. Try again.",
       "unknown-action": "Fate Dice doesn't know how to do that.",
-      "internal": "Something went wrong. The GM's console has details."
+      "internal": "Something went wrong. The GM's console has details.",
+      "not-fateable": "That roll can't be fated."
+    },
+    "Chat": {
+      "Reroll": "Fate Reroll",
+      "Fated": "Fated",
+      "FateReroll": "Fate Reroll",
+      "Kept": "kept",
+      "NotKept": "not kept"
     }
   }
 }

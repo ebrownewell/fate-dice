@@ -40,4 +40,18 @@ describe("createApi", () => {
     await api.setPoints("a", 3);
     expect(bus.request).toHaveBeenCalledWith("setPoints", { actorId: "a", value: 3 });
   });
+
+  it("refunds, defaulting to 1 point", async () => {
+    const { bus, api } = setup();
+    await api.refund(fakeActor("a"));
+    expect(bus.request).toHaveBeenCalledWith("refund", { actorId: "a", amount: 1 });
+  });
+
+  it("fates a chat message, given as a document or an id", async () => {
+    const { bus, api } = setup();
+    await api.fateReroll({ id: "m1" });
+    await api.fateReroll("m2");
+    expect(bus.request).toHaveBeenNthCalledWith(1, "fateReroll", { messageId: "m1" });
+    expect(bus.request).toHaveBeenNthCalledWith(2, "fateReroll", { messageId: "m2" });
+  });
 });

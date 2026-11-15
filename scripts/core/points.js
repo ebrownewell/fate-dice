@@ -47,3 +47,15 @@ export function setPoints(current, value, max) {
   }
   return change(current, value);
 }
+
+/**
+ * Give points back. Capped at the maximum when one is given; uncapped for an
+ * automatic rollback, which restores exactly what was just taken.
+ * @param {number} current
+ * @param {number} amount
+ * @param {number} [max]
+ */
+export function refundPoints(current, amount, max = Infinity) {
+  if (!isWholeAtLeast(amount, 1)) throw new FateError("invalid", "Refund must be at least 1");
+  return change(current, Math.max(current, Math.min(max, current + amount)));
+}

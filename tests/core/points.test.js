@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { awardPoints, setPoints, spendPoints } from "../../scripts/core/points.js";
+import { awardPoints, refundPoints, setPoints, spendPoints } from "../../scripts/core/points.js";
 import { FateError } from "../../scripts/core/errors.js";
 
 /** @param {() => unknown} fn @param {string} code */
@@ -63,5 +63,23 @@ describe("setPoints", () => {
 
   it.each([-1, 4, 2.5])("rejects %s", (value) => {
     expectFateError(() => setPoints(1, value, 3), "invalid");
+  });
+});
+
+describe("refundPoints", () => {
+  it("gives points back", () => {
+    expect(refundPoints(1, 2)).toEqual({ before: 1, after: 3, delta: 2 });
+  });
+
+  it("caps at the maximum when one is given", () => {
+    expect(refundPoints(3, 1, 3)).toEqual({ before: 3, after: 3, delta: 0 });
+  });
+
+  it("is uncapped without a maximum, so a rollback restores exactly what was taken", () => {
+    expect(refundPoints(3, 1)).toEqual({ before: 3, after: 4, delta: 1 });
+  });
+
+  it.each([0, -1, 1.5])("rejects an amount of %s", (amount) => {
+    expectFateError(() => refundPoints(1, amount), "invalid");
   });
 });

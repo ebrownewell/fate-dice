@@ -20,3 +20,4 @@ declare const CONST: any;
 declare const quench: any;
 declare const Combat: any;
 declare const ChatMessage: any;
+declare const Roll: any;

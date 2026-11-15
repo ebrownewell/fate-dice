@@ -6,14 +6,14 @@
 import { getActorPoints, writeActorPoints } from "./actorPoints.js";
 import { FateError } from "./errors.js";
 import { createKeyedQueue } from "./keyedQueue.js";
-import { awardPoints, setPoints, spendPoints } from "./points.js";
+import { awardPoints, refundPoints, setPoints, spendPoints } from "./points.js";
 
 /** @typedef {import("./types.js").ActorLike} ActorLike */
 /** @typedef {import("./types.js").UserLike} UserLike */
 /** @typedef {import("./types.js").PointChange} PointChange */
 
 /**
- * @typedef {PointChange & { action: "award" | "spend" | "set", actorId: string, userId: string }} ChangeRecord
+ * @typedef {PointChange & { action: "award" | "spend" | "set" | "refund" | "rollback", actorId: string, userId: string }} ChangeRecord
  */
 
 /** @typedef {{ userId: string }} RequestContext */
@@ -109,6 +109,32 @@ export function createFateService({ getUser, getActor, getMaxPoints }) {
       const actor = requireActor(actorId);
       const max = getMaxPoints();
       return applyChange(actor, "set", userId, (current) => setPoints(current, value, max));
+    },
+
+    /**
+     * Give points back (GM only), capped at the maximum.
+     * @param {{ actorId: string, amount: number }} payload
+     * @param {RequestContext} context
+     */
+    async refund({ actorId, amount }, { userId }) {
+      requireGM(requireUser(userId));
+      const actor = requireActor(actorId);
+      const max = getMaxPoints();
+      return applyChange(actor, "refund", userId, (current) => refundPoints(current, amount, max));
+    },
+
+    /**
+     * Undo a spend after a later step failed. Internal to the GM client: not
+     * exposed over the socket, so it skips permission checks.
+     * @param {ChangeRecord} spent
+     */
+    async rollback(spent) {
+      const actor = requireActor(spent.actorId);
+      const amount = -spent.delta;
+      if (amount <= 0) return null;
+      return applyChange(actor, "rollback", spent.userId, (current) =>
+        refundPoints(current, amount),
+      );
     },
   };
 }

@@ -47,8 +47,10 @@ fate.getPoints(actor); // read, no GM needed
 await fate.award(actor, 1); // GM only; also accepts an array of actors or ids
 await fate.spend(actor, 1); // owner or GM
 await fate.setPoints(actor, 3); // GM only
+await fate.refund(actor, 1); // GM only, capped at the maximum
+await fate.fateReroll(message); // same as clicking Fate Reroll on that chat card
 ```
 
 Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject
 with a `FateError` whose `code` is one of `invalid`, `insufficient-points`, `not-permitted`,
-`not-found`, `no-gm`, `timeout`, `unknown-action` or `internal`.
+`not-found`, `not-fateable`, `no-gm`, `timeout`, `unknown-action` or `internal`.

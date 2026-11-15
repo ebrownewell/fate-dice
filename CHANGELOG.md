@@ -6,6 +6,14 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Fate Reroll** on dnd5e d20 rolls: attacks, saves, ability and skill checks, tool checks and initiative.
+  - A "Fate Reroll (cost)" button on the roller's own chat cards; disabled with a reason when they can't afford it.
+  - The GM's client spends the cost, rolls the fate die and posts the fated roll as a real dnd5e roll from the player, with a banner such as "Fate Reroll: 7 → 17 (+10), kept".
+  - The fate bonus is its own `+10[Fate]` term; a boosted die never crits or fumbles.
+  - The original is marked "Fated" and can't be fated twice. Fated initiative updates the combat tracker.
+  - If anything fails after the spend, the Fate Dice are refunded.
+  - Death saves are not supported yet (no button).
+- GM refunds (`api.refund`), capped at the maximum.
 - World settings: maximum Fate Dice, Fate Reroll on/off and cost, fate die bonus on/off, threshold and amount, and whether Fate Reroll works on initiative and death saves.
 - Fate Dice stored per character (`flags.fate-dice.points`), capped at the maximum.
 - All point changes run on the active GM's client over the module socket, with permission checks and a per-character queue that prevents double-spending.

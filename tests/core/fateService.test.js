@@ -148,6 +148,24 @@ describe("setPoints", () => {
   });
 });
 
+describe("refund", () => {
+  it("lets the GM give back spent points", async () => {
+    const change = await ctx.service.refund({ actorId: "alice-pc", amount: 2 }, { userId: "gm" });
+    expect(change).toMatchObject({ action: "refund", before: 1, after: 3, delta: 2 });
+  });
+
+  it("caps GM refunds at the maximum", async () => {
+    await ctx.service.refund({ actorId: "alice-pc", amount: 5 }, { userId: "gm" });
+    expect(getActorPoints(ctx.alicePc)).toBe(3);
+  });
+
+  it("refuses players", async () => {
+    await expect(
+      ctx.service.refund({ actorId: "alice-pc", amount: 1 }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "not-permitted" });
+  });
+});
+
 describe("permissions", () => {
   it("refuses requests from unknown users", async () => {
     await expect(

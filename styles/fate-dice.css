@@ -1,1 +1,27 @@
-/* Fate Dice styles */
+/* Fate Dice */
+
+.fate-dice-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.fate-dice-controls .fate-dice-reroll {
+  width: auto;
+  padding: 0 0.6rem;
+  line-height: 1.6rem;
+}
+
+.fate-dice-fated {
+  font-size: var(--font-size-12, 12px);
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.fate-dice-banner {
+  margin-bottom: 0.25rem;
+  padding: 0.15rem 0.4rem;
+  border-left: 3px solid var(--color-warm-2, #c9593f);
+  font-size: var(--font-size-12, 12px);
+  font-weight: bold;
+}

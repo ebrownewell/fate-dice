@@ -20,4 +20,11 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] A player client (separate browser) can call `game.modules.get("fate-dice").api.spend(...)` on
       their own character while the GM is connected, and gets a `no-gm` error when no GM is.
 
-<!-- Add sections as features land: chat cards, HUD, shop, logs, nominations. -->
+### Fate Reroll chat cards
+
+- [ ] The button sits neatly under the roll in both light and dark UI themes.
+- [ ] The fated result's banner and `+10[Fate]` term read clearly; the dice tooltip shows the fate die.
+- [ ] Dice sound plays for the fated roll.
+- [ ] The button looks right on a whispered/blind roll (GM roll modes).
+
+<!-- Add sections as features land: HUD, shop, logs, nominations. -->
