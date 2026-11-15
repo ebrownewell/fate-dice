@@ -11,6 +11,7 @@ All notable changes to this module are documented here. Versions follow [Semanti
 - All point changes run on the active GM's client over the module socket, with permission checks and a per-character queue that prevents double-spending.
 - Macro API: `game.modules.get("fate-dice").api` with `getPoints`, `award`, `spend` and `setPoints`.
 - Quench integration tests for the points API.
+- Dev tooling to drive a local Foundry server with Playwright: world setup, a terminal Quench runner, and multi-client socket tests.
 - Fate Reroll rules engine (`scripts/rules/fateReroll.js`): configurable bonus and threshold, normal/advantage/disadvantage comparison, crit and fumble detection, input and rules validation.
 
 - Project tooling: Vitest, ESLint, Prettier, JS type checking, GitHub Actions CI.

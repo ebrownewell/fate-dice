@@ -14,3 +14,7 @@ declare const ui: any;
 declare const CONFIG: any;
 declare const foundry: any;
 declare const Actor: any;
+declare const User: any;
+declare const CONST: any;
+/** Global from the Quench test module, present only when it is enabled. */
+declare const quench: any;

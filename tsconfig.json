@@ -11,5 +11,11 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["scripts/**/*.js", "tests/**/*.js", "types/**/*.d.ts"]
+  "include": [
+    "scripts/**/*.js",
+    "tests/**/*.js",
+    "tests-foundry/**/*.js",
+    "tools/**/*.js",
+    "types/**/*.d.ts"
+  ]
 }

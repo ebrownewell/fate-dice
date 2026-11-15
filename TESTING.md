@@ -3,6 +3,8 @@
 ## Automated
 
 - `npm test`: unit tests for everything that can run outside Foundry.
+- `npm run test:foundry`: runs the Quench batches and the multi-client browser tests against the
+  local dev server. See `tools/foundry/README.md` for setting it up.
 - **In Foundry:** install and enable the [Quench](https://github.com/Ethaks/FVTT-Quench) module,
   then open Quench's test window as a GM and run the **Fate Dice** batches. They create and delete
   a temporary actor named "Fate Dice integration test".

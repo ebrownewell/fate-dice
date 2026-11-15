@@ -17,11 +17,14 @@ export default [
         CONFIG: "readonly",
         foundry: "readonly",
         Actor: "readonly",
+        User: "readonly",
+        CONST: "readonly",
+        quench: "readonly",
       },
     },
   },
   {
-    files: ["tests/**/*.js", "*.config.js"],
+    files: ["tests/**/*.js", "tests-foundry/**/*.js", "tools/**/*.js", "*.config.js"],
     languageOptions: { globals: { ...globals.node } },
   },
 ];

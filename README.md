@@ -21,6 +21,7 @@ The module ships as plain ES modules with no build step. Node is only used for d
 npm install
 npm test          # unit tests (Vitest)
 npm run check     # lint + format check + type check + tests (what CI runs)
+npm run test:foundry  # in-Foundry tests; needs the local dev server (tools/foundry/README.md)
 ```
 
 To try it in Foundry, symlink this folder into your Foundry data folder:
