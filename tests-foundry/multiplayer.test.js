@@ -65,7 +65,12 @@ describe("player requests over the socket", () => {
     });
   });
 
-  it("a player gets 'no-gm' when the GM is not connected", async () => {
+  it("a player gets 'no-gm' when the GM is not connected", async (ctx) => {
+    const otherGMs = await gm.page.evaluate(
+      () => game.users.filter((/** @type {any} */ u) => u.isGM && u.active && !u.isSelf).length,
+    );
+    // Someone else (e.g. you, in a browser) is logged in as a GM.
+    if (otherGMs > 0) ctx.skip();
     await gm.browser.close();
     await expect.poll(() => player.page.evaluate(() => game.users.activeGM?.id ?? null)).toBeNull();
     expect(await call(player.page, "spend", "Player A Hero", 1)).toEqual({ error: "no-gm" });

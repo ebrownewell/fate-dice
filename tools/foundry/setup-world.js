@@ -3,12 +3,16 @@
 //   node tools/foundry/setup-world.js
 //
 // - enables Fate Dice and Quench
+// - creates a "Test GM" account for automation
 // - creates players "Player A" and "Player B" (no passwords; local dev only)
-// - gives each a dnd5e character with a longsword
+// - gives each a dnd5e character with a longsword and 20 HP
 
-import { joinWorld, waitForReady } from "./session.js";
+import { TEST_GM, joinWorld, waitForReady } from "./session.js";
 
-const { browser, page } = await joinWorld();
+// The first run has no Test GM yet, so it joins as the world's Gamemaster.
+const { browser, page } = await joinWorld({
+  user: process.env.FOUNDRY_SETUP_USER ?? TEST_GM,
+}).catch(() => joinWorld({ user: "Gamemaster" }));
 
 const needsReload = await page.evaluate(async () => {
   const key = "moduleConfiguration";
@@ -22,7 +26,10 @@ if (needsReload) {
   await waitForReady(page);
 }
 
-const summary = await page.evaluate(async () => {
+const summary = await page.evaluate(async (testGm) => {
+  if (!game.users.getName(testGm)) {
+    await User.create({ name: testGm, role: CONST.USER_ROLES.GAMEMASTER, password: "" });
+  }
   const PLAYERS = ["Player A", "Player B"];
   for (const name of PLAYERS) {
     if (!game.users.getName(name)) {
@@ -54,6 +61,10 @@ const summary = await page.evaluate(async () => {
       });
     }
     if (!actor.items.getName("Longsword")) await actor.createEmbeddedDocuments("Item", [longsword]);
+    // Classless characters have 0 max HP; give them some so revives and healing work.
+    if (actor.system.attributes.hp.max < 20) {
+      await actor.update({ "system.attributes.hp.max": 20, "system.attributes.hp.value": 20 });
+    }
     if (user.character?.id !== actor.id) await user.update({ character: actor.id });
   }
 
@@ -62,7 +73,7 @@ const summary = await page.evaluate(async () => {
     api: typeof game.modules.get("fate-dice").api,
     users: game.users.map((/** @type {any} */ u) => `${u.name} → ${u.character?.name ?? "-"}`),
   };
-});
+}, TEST_GM);
 
 console.log(summary);
 await browser.close();
