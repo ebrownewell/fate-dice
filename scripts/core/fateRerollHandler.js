@@ -8,6 +8,7 @@ import { checkFateable, getFateFlags } from "./fateRerollPolicy.js";
 import { createKeyedQueue } from "./keyedQueue.js";
 import { getFateRules } from "./settings.js";
 import { resolveFateReroll } from "../rules/fateReroll.js";
+import { isDeathSaveCurrent, planFatedDeathSave } from "../rules/deathSave.js";
 
 /** @typedef {import("../systems/dnd5e.js").RollInfo} RollInfo */
 /** @typedef {import("../rules/fateReroll.js").FateRerollResult} FateRerollResult */
@@ -30,6 +31,8 @@ import { resolveFateReroll } from "../rules/fateReroll.js";
  * @param {(args: { original: any, rollData: any, outcome: FateRerollResult, userId: string }) => Promise<{ id: string }>} deps.createFatedMessage
  * @param {(messageId: string, fatedMessageId: string) => Promise<unknown>} deps.markFated
  * @param {(args: { actorId: string, from: number, to: number }) => Promise<unknown>} deps.updateInitiative
+ * @param {(actorId: string) => import("../rules/deathSave.js").DeathState} deps.getDeathState
+ * @param {(args: { actorId: string, updates: Record<string, number>, chatKey: string | null }) => Promise<unknown>} deps.applyDeathSave
  */
 export function createFateRerollHandler(deps) {
   const queue = createKeyedQueue();
@@ -55,6 +58,26 @@ export function createFateRerollHandler(deps) {
           );
         }
 
+        // A death save can only be fated while the character still shows its effect.
+        const deathSave = info.kind === "death" ? getFateFlags(message).deathSave : undefined;
+        const target = info.target ?? 10;
+        const original = {
+          total: info.total,
+          isCritical: info.keptNatural >= info.critThreshold,
+          isFumble: info.keptNatural === 1,
+        };
+        if (
+          deathSave &&
+          !isDeathSaveCurrent({
+            before: deathSave.before,
+            current: deps.getDeathState(info.actorId),
+            original,
+            target,
+          })
+        ) {
+          throw new FateError("not-fateable", "The character has changed since this death save");
+        }
+
         /** @type {ChangeRecord} */
         const change = await deps.service.spend(
           { actorId: info.actorId, cost: settings.rerollCost },
@@ -78,6 +101,29 @@ export function createFateRerollHandler(deps) {
             userId,
           });
           await deps.markFated(messageId, created.id);
+
+          if (deathSave && outcome.kept === "fate") {
+            const plan = planFatedDeathSave({
+              before: deathSave.before,
+              current: deps.getDeathState(info.actorId),
+              original,
+              fated: {
+                total: rollData.total,
+                isCritical: outcome.isCritical,
+                isFumble: outcome.isFumble,
+              },
+              target,
+            });
+            if (!plan.ok)
+              throw new FateError("not-fateable", "The character changed during the reroll");
+            if (Object.keys(plan.updates).length > 0) {
+              await deps.applyDeathSave({
+                actorId: info.actorId,
+                updates: plan.updates,
+                chatKey: plan.chatKey,
+              });
+            }
+          }
 
           if (info.kind === "initiative" && rollData.total !== info.total) {
             await deps.updateInitiative({

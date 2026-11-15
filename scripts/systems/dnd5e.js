@@ -15,6 +15,7 @@
  * @property {number} total
  * @property {number} modifier total − keptNatural
  * @property {number} critThreshold
+ * @property {number | null} target The roll's DC, if it has one (death saves: 10).
  * @property {string} actorId
  */
 
@@ -58,6 +59,7 @@ function getRollInfo(message) {
     total: roll.total,
     modifier: roll.total - kept.result,
     critThreshold: die.options?.criticalSuccess ?? roll.options?.criticalSuccess ?? 20,
+    target: typeof roll.options?.target === "number" ? roll.options.target : null,
     actorId,
   };
 }

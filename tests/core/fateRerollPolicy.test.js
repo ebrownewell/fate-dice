@@ -64,11 +64,27 @@ describe("checkFateable", () => {
     ).toEqual({ ok: false, reason: "initiative-disabled" });
   });
 
-  it("refuses death saves for now (support is coming in a later step)", () => {
+  it("allows a death save that carries a snapshot of the character before it", () => {
+    expect(check({ info: rollInfo("death"), flags: { deathSave: { before: {} } } })).toEqual({
+      ok: true,
+    });
+  });
+
+  it("refuses a death save without a snapshot (e.g. rolled before the module was on)", () => {
     expect(check({ info: rollInfo("death") })).toEqual({
       ok: false,
-      reason: "death-unsupported",
+      reason: "death-no-snapshot",
     });
+  });
+
+  it("respects the death save setting", () => {
+    expect(
+      check({
+        info: rollInfo("death"),
+        flags: { deathSave: { before: {} } },
+        settings: { ...settings, rerollOnDeathSaves: false },
+      }),
+    ).toEqual({ ok: false, reason: "death-disabled" });
   });
 });
 

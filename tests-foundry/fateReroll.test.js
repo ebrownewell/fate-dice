@@ -2,6 +2,7 @@
 // button, the GM's client does the work. Run with `npm run test:foundry`.
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { joinWorld } from "../tools/foundry/session.js";
+import { deathStateAfter } from "../scripts/rules/deathSave.js";
 
 const HERO = "Player A Hero";
 
@@ -39,9 +40,13 @@ const rollAs = (/** @type {import("playwright").Page} */ page, kind) =>
     if (rollKind === "attack") await attack.rollAttack({}, noDialog);
     if (rollKind === "damage") await attack.rollDamage({}, noDialog);
     if (rollKind === "skill") await actor.rollSkill({ skill: "ath" }, noDialog);
+    if (rollKind === "death") await actor.rollDeathSave({}, noDialog);
     if (rollKind === "initiative")
       await game.combat.rollInitiative([game.combat.combatants.contents[0].id]);
-    const added = game.messages.contents.filter((/** @type {any} */ m) => !before.has(m.id));
+    // Some rolls add a follow-up message (e.g. "has stabilized"); return the roll itself.
+    const added = game.messages.contents.filter(
+      (/** @type {any} */ m) => !before.has(m.id) && m.rolls.length > 0,
+    );
     return added.at(-1).id;
   }, /** @type {[string, string]} */ ([HERO, kind]));
 
@@ -227,5 +232,98 @@ describe("Fate Reroll on initiative", () => {
     await expect
       .poll(() => gm.page.evaluate(() => game.combat.combatants.contents[0].initiative))
       .toBe(fatedTotal);
+  });
+});
+
+describe("Fate Reroll on death saves", () => {
+  /** Put the hero at 0 HP with the given counts, and wait until the player sees it. */
+  const makeDying = async (success = 0, failure = 0) => {
+    const onGm = await setDying(success, failure);
+    expect(onGm, "GM-side state after update").toEqual([0, success, failure]);
+    await expect
+      .poll(
+        () =>
+          player.page.evaluate((name) => {
+            const a = game.actors.getName(name).system.attributes;
+            return [a.hp.value, a.death.success, a.death.failure];
+          }, HERO),
+        { timeout: 10_000 },
+      )
+      .toEqual([0, success, failure]);
+  };
+
+  const setDying = (/** @type {number} */ success, /** @type {number} */ failure) =>
+    gm.page.evaluate(async ([name, s, f]) => {
+      await game.actors.getName(name).update({
+        "system.attributes.hp.value": 0,
+        "system.attributes.death.success": s,
+        "system.attributes.death.failure": f,
+      });
+      const a = game.actors.getName(name).system.attributes;
+      return [a.hp.value, a.death.success, a.death.failure];
+    }, /** @type {[string, number, number]} */ ([HERO, success, failure]));
+
+  const deathState = () =>
+    gm.page.evaluate((name) => {
+      const a = game.actors.getName(name).system.attributes;
+      return { success: a.death.success, failure: a.death.failure, hp: a.hp.value };
+    }, HERO);
+
+  afterAll(async () => {
+    await gm.page.evaluate(
+      (name) =>
+        game.actors.getName(name).update({
+          "system.attributes.hp.value": 20,
+          "system.attributes.death.success": 0,
+          "system.attributes.death.failure": 0,
+        }),
+      HERO,
+    );
+  });
+
+  it("snapshots the character into the death save's message", async () => {
+    await makeDying(1, 1);
+    const id = await rollAs(player.page, "death");
+    const before = await player.page.evaluate(
+      (mid) => game.messages.get(mid).getFlag("fate-dice", "deathSave")?.before,
+      id,
+    );
+    expect(before).toEqual({ success: 1, failure: 1, hp: 0 });
+    await expect
+      .poll(() => chatCard(player.page, id))
+      .toMatchObject({
+        button: { disabled: false },
+      });
+  });
+
+  it("leaves the character exactly as the fated roll would have", async () => {
+    await makeDying(1, 1);
+    const id = await rollAs(player.page, "death");
+    await clickFate(player.page, id);
+    const { fatedTotal, isCritical, isFumble } = await fatedResultOf(player.page, id);
+    const expected = deathStateAfter(
+      { success: 1, failure: 1, hp: 0 },
+      { total: fatedTotal, isCritical: Boolean(isCritical), isFumble: Boolean(isFumble) },
+    );
+    await expect.poll(deathState).toEqual(expected);
+  });
+
+  it("refuses, without spending, once the character has changed (healed)", async () => {
+    await makeDying(0, 0);
+    const id = await rollAs(player.page, "death");
+    await gm.page.evaluate(
+      (name) => game.actors.getName(name).update({ "system.attributes.hp.value": 5 }),
+      HERO,
+    );
+    const code = await player.page.evaluate(
+      (mid) =>
+        game.modules
+          .get("fate-dice")
+          .api.fateReroll(mid)
+          .catch((/** @type {any} */ e) => e.code),
+      id,
+    );
+    expect(code).toBe("not-fateable");
+    expect(await getPoints(player.page)).toBe(2);
   });
 });

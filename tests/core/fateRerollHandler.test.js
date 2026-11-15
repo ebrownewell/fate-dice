@@ -41,6 +41,8 @@ function setup({ points = 2, settings = SETTINGS } = {}) {
   const addMessage = (id, data) => messages.set(id, { ...data, _id: id });
 
   let fateDie = 7;
+  /** @type {{ success: number, failure: number, hp: number }} */
+  let deathState = { success: 0, failure: 0, hp: 0 };
   let created = 0;
   const deps = {
     getMessage: vi.fn((/** @type {string} */ id) => structuredClone(messages.get(id))),
@@ -54,6 +56,8 @@ function setup({ points = 2, settings = SETTINGS } = {}) {
       data.flags[MODULE_ID] = { ...data.flags[MODULE_ID], fatedBy };
     }),
     updateInitiative: vi.fn(async () => {}),
+    getDeathState: vi.fn(() => deathState),
+    applyDeathSave: vi.fn(async () => {}),
   };
 
   return {
@@ -62,6 +66,7 @@ function setup({ points = 2, settings = SETTINGS } = {}) {
     addMessage,
     handler: createFateRerollHandler(deps),
     setFateDie: (/** @type {number} */ n) => (fateDie = n),
+    setDeathState: (/** @type {typeof deathState} */ s) => (deathState = s),
   };
 }
 
@@ -229,5 +234,66 @@ describe("fateReroll: initiative", () => {
     ctx.setFateDie(20);
     await fateAs("alice");
     expect(ctx.deps.updateInitiative).not.toHaveBeenCalled();
+  });
+});
+
+describe("fateReroll: death saves", () => {
+  /** A death save that rolled a natural `die` (no modifiers), with a snapshot. */
+  function deathSave(/** @type {number} */ die, before = { success: 1, failure: 1, hp: 0 }) {
+    const message = editFirstRoll(loadMessage("dnd5e", "death-save"), (roll) => {
+      roll.terms[0].results = [{ result: die, active: true }];
+      roll.total = die;
+    });
+    message.speaker.actor = ACTOR_ID;
+    message.flags[MODULE_ID] = { deathSave: { before } };
+    return message;
+  }
+
+  it("replaces a failed save's effect with the fated success", async () => {
+    ctx.addMessage("ds", deathSave(4));
+    ctx.setDeathState({ success: 1, failure: 2, hp: 0 }); // what the 4 did
+    ctx.setFateDie(15);
+    await fateAs("alice", "ds");
+    expect(ctx.deps.applyDeathSave).toHaveBeenCalledWith({
+      actorId: ACTOR_ID,
+      updates: {
+        "system.attributes.death.success": 2,
+        "system.attributes.death.failure": 1,
+      },
+      chatKey: null,
+    });
+  });
+
+  it("refuses, without spending, if the character changed since the roll", async () => {
+    ctx.addMessage("ds", deathSave(4));
+    ctx.setDeathState({ success: 0, failure: 0, hp: 7 }); // healed since
+    await expect(fateAs("alice", "ds")).rejects.toMatchObject({ code: "not-fateable" });
+    expect(getActorPoints(ctx.actor)).toBe(2);
+    expect(ctx.deps.rollD20).not.toHaveBeenCalled();
+  });
+
+  it("changes nothing on the character when the original die is kept", async () => {
+    ctx = setup({ settings: { ...SETTINGS, bonusEnabled: false } });
+    ctx.addMessage("ds", deathSave(8));
+    ctx.setDeathState({ success: 1, failure: 2, hp: 0 });
+    ctx.setFateDie(3);
+    await fateAs("alice", "ds");
+    expect(ctx.deps.applyDeathSave).not.toHaveBeenCalled();
+  });
+
+  it("refuses a death save without a snapshot", async () => {
+    const message = deathSave(4);
+    delete message.flags[MODULE_ID];
+    ctx.addMessage("ds", message);
+    await expect(fateAs("alice", "ds")).rejects.toMatchObject({ code: "not-fateable" });
+  });
+
+  it("gives the points back if updating the character fails", async () => {
+    ctx.addMessage("ds", deathSave(4));
+    ctx.setDeathState({ success: 1, failure: 2, hp: 0 });
+    ctx.setFateDie(15);
+    ctx.deps.applyDeathSave.mockRejectedValueOnce(new Error("update failed"));
+    await expect(fateAs("alice", "ds")).rejects.toThrow("update failed");
+    expect(getActorPoints(ctx.actor)).toBe(2);
   });
 });

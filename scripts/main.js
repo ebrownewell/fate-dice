@@ -9,11 +9,13 @@ import { createFateService } from "./core/fateService.js";
 import { createRequestBus } from "./core/requestBus.js";
 import { registerSettings } from "./core/settings.js";
 import { registerChatHooks } from "./foundry/chatHooks.js";
+import { registerDeathSaveHooks } from "./foundry/deathSaveHooks.js";
 import { createFoundryFateRerollDeps } from "./foundry/fateRerollDeps.js";
 import { registerQuenchTests } from "./quench.js";
 
 Hooks.once("init", () => {
   registerSettings(game.settings, MODULE_ID);
+  if (game.system.id === "dnd5e") registerDeathSaveHooks();
 });
 
 Hooks.once("ready", () => {

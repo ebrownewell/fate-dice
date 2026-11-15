@@ -66,6 +66,11 @@ describe("dnd5e getRollInfo: recorded messages", () => {
     expect(info("initiative")?.critThreshold).toBe(20);
   });
 
+  it("reads a roll's target (a death save's DC of 10), or null when there is none", () => {
+    expect(info("death-save")?.target).toBe(10);
+    expect(info("skill")?.target).toBeNull();
+  });
+
   it("reads the speaking actor", () => {
     const message = load("save");
     expect(dnd5eAdapter.getRollInfo(message)?.actorId).toBe(message.speaker.actor);

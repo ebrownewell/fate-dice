@@ -9,10 +9,11 @@ import { MODULE_ID } from "./constants.js";
  * @property {string} [fatedBy] On an original roll: the id of its fated result message.
  * @property {string} [fatedFrom] On a fated result: the id of the original roll message.
  * @property {import("../rules/fateReroll.js").FateRerollResult} [outcome] On a fated result.
+ * @property {{ before: import("../rules/deathSave.js").DeathState }} [deathSave] On a death save: the character before it.
  */
 
 /**
- * @typedef {"disabled" | "not-d20" | "already-fated" | "is-fate-result" | "initiative-disabled" | "death-unsupported"} NotFateableReason
+ * @typedef {"disabled" | "not-d20" | "already-fated" | "is-fate-result" | "initiative-disabled" | "death-disabled" | "death-no-snapshot"} NotFateableReason
  */
 
 /**
@@ -36,8 +37,11 @@ export function checkFateable({ info, flags, settings }) {
   if (flags.fatedBy) return no("already-fated");
   if (!info) return no("not-d20");
   if (info.kind === "initiative" && !settings.rerollOnInitiative) return no("initiative-disabled");
-  // Death saves need their effects on the character undone; not supported yet.
-  if (info.kind === "death") return no("death-unsupported");
+  if (info.kind === "death") {
+    if (!settings.rerollOnDeathSaves) return no("death-disabled");
+    // Undoing the original's effect needs the character's state before it.
+    if (!flags.deathSave?.before) return no("death-no-snapshot");
+  }
   return { ok: true };
 }
 

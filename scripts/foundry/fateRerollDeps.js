@@ -5,6 +5,7 @@ import { MODULE_ID } from "../core/constants.js";
 import { buildFatedMessageData } from "../core/fatedMessage.js";
 import { readSettings } from "../core/settings.js";
 import { getSystemAdapter } from "../systems/index.js";
+import { snapshotDeathState } from "../rules/deathSave.js";
 
 /**
  * @param {{ service: any }} options
@@ -45,6 +46,21 @@ export function createFoundryFateRerollDeps({ service }) {
             await combatant.update({ initiative: to });
           }
         }
+      }
+    },
+
+    /** @param {string} actorId */
+    getDeathState: (actorId) => snapshotDeathState(game.actors.get(actorId)?.system?.attributes),
+
+    /** @param {{ actorId: string, updates: Record<string, number>, chatKey: string | null }} args */
+    async applyDeathSave({ actorId, updates, chatKey }) {
+      const actor = game.actors.get(actorId);
+      await actor.update(updates);
+      if (chatKey) {
+        await ChatMessage.create({
+          content: game.i18n.format(chatKey, { name: actor.name }),
+          speaker: ChatMessage.getSpeaker({ actor }),
+        });
       }
     },
   };
