@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { SETTING_DEFINITIONS } from "../scripts/core/settings.js";
+import { CLIENT_SETTING_DEFINITIONS, SETTING_DEFINITIONS } from "../scripts/core/settings.js";
 import { ERROR_CODES } from "../scripts/core/errors.js";
 import { CHAT_LABEL_KEYS } from "../scripts/foundry/chatHooks.js";
 import { LOG_LABEL_KEYS } from "../scripts/ui/logRows.js";
-import { LOG_APP_KEYS } from "../scripts/apps/labels.js";
+import { LOG_APP_KEYS, PANEL_KEYS } from "../scripts/apps/labels.js";
 
 const en = JSON.parse(readFileSync(new URL("../lang/en.json", import.meta.url), "utf8"));
 
@@ -17,11 +17,19 @@ describe("English translations", () => {
     expect(lookup(def.hint)).toEqual(expect.any(String));
   });
 
+  it("has a name and hint for each client setting shown in the menu", () => {
+    for (const def of /** @type {any[]} */ (Object.values(CLIENT_SETTING_DEFINITIONS))) {
+      if (!def.config) continue;
+      expect(lookup(/** @type {string} */ (def.name))).toEqual(expect.any(String));
+      expect(lookup(/** @type {string} */ (def.hint))).toEqual(expect.any(String));
+    }
+  });
+
   it.each(Object.values(CHAT_LABEL_KEYS))("has chat label %s", (key) => {
     expect(lookup(key)).toEqual(expect.any(String));
   });
 
-  it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS])("has log label %s", (key) => {
+  it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS, ...PANEL_KEYS])("has label %s", (key) => {
     expect(lookup(key)).toEqual(expect.any(String));
   });
 

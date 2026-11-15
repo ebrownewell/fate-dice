@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  CLIENT_SETTING_DEFINITIONS,
   SETTING_DEFINITIONS,
   getFateRules,
   readSettings,
@@ -38,11 +39,38 @@ describe("SETTING_DEFINITIONS", () => {
   });
 });
 
+describe("CLIENT_SETTING_DEFINITIONS", () => {
+  it("lets each player show or hide their HUD, on by default", () => {
+    expect(CLIENT_SETTING_DEFINITIONS.showHud).toMatchObject({
+      scope: "client",
+      config: true,
+      type: Boolean,
+      default: true,
+    });
+  });
+
+  it("remembers the HUD position per client, out of the settings menu", () => {
+    expect(CLIENT_SETTING_DEFINITIONS.hudPosition).toMatchObject({
+      scope: "client",
+      config: false,
+      type: Object,
+      default: null,
+    });
+  });
+});
+
 describe("registerSettings", () => {
   it("registers each definition under the module id", () => {
     const api = { register: vi.fn(), get: vi.fn() };
     registerSettings(api, "fate-dice");
-    expect(api.register).toHaveBeenCalledTimes(Object.keys(SETTING_DEFINITIONS).length);
+    expect(api.register).toHaveBeenCalledTimes(
+      Object.keys(SETTING_DEFINITIONS).length + Object.keys(CLIENT_SETTING_DEFINITIONS).length,
+    );
+    expect(api.register).toHaveBeenCalledWith(
+      "fate-dice",
+      "showHud",
+      CLIENT_SETTING_DEFINITIONS.showHud,
+    );
     expect(api.register).toHaveBeenCalledWith(
       "fate-dice",
       "maxPoints",

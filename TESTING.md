@@ -34,4 +34,11 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] "view roll" opens the roll in a popout; on a deleted message it says so.
 - [ ] The refund confirmation reads correctly.
 
-<!-- Add sections as features land: HUD, shop, nominations. -->
+### HUD and GM panel
+
+- [ ] The HUD doesn't cover anything important at its default spot (above the players list), in both themes.
+- [ ] Dragging feels right; the HUD stays on screen after resizing the window.
+- [ ] The GM panel reads well with 5+ characters and long names.
+- [ ] The "Award…" dialog is clear; its note shows in the character's log.
+
+<!-- Add sections as features land: shop, nominations. -->

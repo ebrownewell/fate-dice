@@ -33,6 +33,10 @@
       "RerollOnDeathSaves": {
         "Name": "Allow Fate Reroll on death saves",
         "Hint": "Let players use a Fate Reroll on death saving throws."
+      },
+      "ShowHud": {
+        "Name": "Show Fate Dice HUD",
+        "Hint": "Show your character's Fate Dice on screen (GMs: a button for the Fate Dice panel). Drag it to move it."
       }
     },
     "Errors": {
@@ -76,6 +80,24 @@
       "Set": "Set by GM",
       "Refund": "Refund",
       "AutoRefund": "Automatic refund (the reroll failed)"
+    },
+    "Panel": {
+      "Title": "Fate Dice",
+      "SessionStart": "Start of session: +1 everyone",
+      "SessionStartReason": "Session start",
+      "SessionStartDone": "{gained} characters gained a Fate Die; {full} were already full.",
+      "Plus": "+1",
+      "Minus": "−1",
+      "Award": "Award…",
+      "AwardTitle": "Award Fate Dice to {name}",
+      "Amount": "Amount",
+      "Note": "Note (optional)",
+      "Log": "Log",
+      "Empty": "No player characters yet. Assign characters to players in User Configuration."
+    },
+    "Hud": {
+      "OpenLog": "Your Fate Dice. Click for your log, drag to move.",
+      "GmButton": "Fate Dice"
     }
   }
 }

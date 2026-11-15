@@ -19,9 +19,13 @@ export function createApi({ bus }) {
     /** @param {Pick<ActorLike, "getFlag">} actor */
     getPoints: (actor) => getActorPoints(actor),
 
-    /** @param {ActorRef | ActorRef[]} actors @param {number} [amount] */
-    award: (actors, amount = 1) =>
-      bus.request("award", { actorIds: [actors].flat().map(toId), amount }),
+    /** @param {ActorRef | ActorRef[]} actors @param {number} [amount] @param {string} [reason] */
+    award: (actors, amount = 1, reason) =>
+      bus.request("award", {
+        actorIds: [actors].flat().map(toId),
+        amount,
+        ...(reason ? { reason } : {}),
+      }),
 
     /** @param {ActorRef} actor @param {number} [cost] */
     spend: (actor, cost = 1) => bus.request("spend", { actorId: toId(actor), cost }),

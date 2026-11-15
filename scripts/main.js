@@ -12,6 +12,8 @@ import { registerChatHooks } from "./foundry/chatHooks.js";
 import { registerDeathSaveHooks } from "./foundry/deathSaveHooks.js";
 import { registerSheetHooks } from "./foundry/sheetHooks.js";
 import { FateLogApp } from "./apps/FateLogApp.js";
+import { GmPanelApp } from "./apps/GmPanelApp.js";
+import { registerHud } from "./foundry/hudHooks.js";
 import { createFoundryFateRerollDeps } from "./foundry/fateRerollDeps.js";
 import { registerQuenchTests } from "./quench.js";
 
@@ -47,9 +49,12 @@ Hooks.once("ready", () => {
     /** Open a character's Fate Dice log. @param {any} actor An Actor or its id. */
     openLog: (/** @type {any} */ actor) =>
       FateLogApp.show(typeof actor === "string" ? game.actors.get(actor) : actor, api),
+    /** Open the GM's Fate Dice panel. */
+    openPanel: () => GmPanelApp.show(api),
   };
   registerChatHooks({ bus });
   registerSheetHooks({ api });
+  registerHud({ api });
   game.modules.get(MODULE_ID).api = api;
   Hooks.callAll(`${MODULE_ID}.ready`, game.modules.get(MODULE_ID).api);
   // Messages already in the chat log rendered before the hooks existed.

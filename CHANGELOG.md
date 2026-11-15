@@ -6,6 +6,9 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Fate Dice HUD**: players see their character's Fate Dice as dots (click for their log); GMs get a button for the Fate Dice panel. Drag to move; the position is remembered per client. Players can hide it ("Show Fate Dice HUD").
+- **GM panel** (`api.openPanel()`): every player character with owners and Fate Dice, +1 / −1, "Award…" with an amount and note, their log, and **Start of session: +1 everyone** (capped, logged as "Session start").
+- `api.award(actors, amount, reason)` takes an optional note.
 - **Per-character log** of every award, spend, Fate Reroll, GM set and refund: when, the change, the balance after, who, and an optional note.
   - Saved in the same update as the point change, so the log and balance always agree.
   - A **Fate Dice** button in the character sheet header opens it for the owner and the GM (also `api.openLog(actor)`).

@@ -23,6 +23,16 @@ describe("createApi", () => {
     expect(bus.request).toHaveBeenNthCalledWith(2, "award", { actorIds: ["b"], amount: 2 });
   });
 
+  it("passes a note with an award", async () => {
+    const { bus, api } = setup();
+    await api.award("a", 1, "Session start");
+    expect(bus.request).toHaveBeenCalledWith("award", {
+      actorIds: ["a"],
+      amount: 1,
+      reason: "Session start",
+    });
+  });
+
   it("awards to several actors at once, defaulting to 1 point", async () => {
     const { bus, api } = setup();
     await api.award([fakeActor("a"), "b"]);

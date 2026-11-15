@@ -53,6 +53,24 @@ export const SETTING_DEFINITIONS = {
   rerollOnDeathSaves: { ...i18n("RerollOnDeathSaves"), ...world, type: Boolean, default: true },
 };
 
+/** Per-player settings. */
+export const CLIENT_SETTING_DEFINITIONS = {
+  showHud: {
+    ...i18n("ShowHud"),
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+  },
+  hudPosition: {
+    name: "HUD position",
+    scope: "client",
+    config: false,
+    type: Object,
+    default: null,
+  },
+};
+
 /** @typedef {keyof typeof SETTING_DEFINITIONS} SettingKey */
 
 /**
@@ -60,8 +78,10 @@ export const SETTING_DEFINITIONS = {
  * @param {string} moduleId
  */
 export function registerSettings(api, moduleId) {
-  for (const [key, definition] of Object.entries(SETTING_DEFINITIONS)) {
-    api.register(moduleId, key, definition);
+  for (const definitions of [SETTING_DEFINITIONS, CLIENT_SETTING_DEFINITIONS]) {
+    for (const [key, definition] of Object.entries(definitions)) {
+      api.register(moduleId, key, definition);
+    }
   }
 }
 

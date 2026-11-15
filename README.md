@@ -44,13 +44,14 @@ ln -s "$PWD" "<FoundryData>/Data/modules/fate-dice"
 ```js
 const fate = game.modules.get("fate-dice").api;
 fate.getPoints(actor); // read, no GM needed
-await fate.award(actor, 1); // GM only; also accepts an array of actors or ids
+await fate.award(actor, 1, "Great roleplay"); // GM only; actor(s) or ids; note optional
 await fate.spend(actor, 1); // owner or GM
 await fate.setPoints(actor, 3); // GM only
 await fate.refund(actor, 1); // GM only, capped at the maximum
 await fate.fateReroll(message); // same as clicking Fate Reroll on that chat card
 await fate.refundEntry(actor, entryId); // GM only: refund a spend from the character's log
 fate.openLog(actor); // open a character's Fate Dice log
+fate.openPanel(); // GM: open the Fate Dice panel
 ```
 
 Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject

@@ -74,3 +74,111 @@
   font-style: italic;
   opacity: 0.75;
 }
+
+/* HUD */
+
+#fate-dice-hud {
+  position: fixed;
+  left: 15px;
+  bottom: 140px;
+  z-index: 60;
+  touch-action: none;
+}
+
+#fate-dice-hud.positioned {
+  bottom: auto;
+}
+
+#fate-dice-hud[hidden] {
+  display: none;
+}
+
+.fate-dice-hud-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: auto;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  cursor: grab;
+}
+
+.fate-dice-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.fate-dice-dot {
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.fate-dice-dot.filled {
+  background: var(--color-warm-2, #c9593f);
+  border-color: var(--color-warm-2, #c9593f);
+  opacity: 1;
+}
+
+.fate-dice-hud-count {
+  font-size: var(--font-size-12, 12px);
+}
+
+/* GM panel */
+
+.fate-dice-panel-app .window-content {
+  padding: 0.5rem;
+}
+
+.fate-dice-session-start {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.fate-dice-party {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fate-dice-member {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--color-border-light-2, rgba(0, 0, 0, 0.15));
+}
+
+.fate-dice-member img {
+  border: none;
+  border-radius: 4px;
+}
+
+.fate-dice-member-name {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fate-dice-member-name .owners {
+  font-size: var(--font-size-12, 12px);
+  opacity: 0.7;
+}
+
+.fate-dice-member-count {
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.fate-dice-member-actions {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.fate-dice-member-actions button {
+  width: auto;
+  padding: 0 0.4rem;
+}

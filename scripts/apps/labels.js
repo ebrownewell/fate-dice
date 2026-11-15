@@ -19,3 +19,20 @@ export const LOG_APP_KEYS = [
   "FATEDICE.Log.Unknown",
   "FATEDICE.Log.MessageGone",
 ];
+
+export const PANEL_KEYS = [
+  "FATEDICE.Panel.Title",
+  "FATEDICE.Panel.SessionStart",
+  "FATEDICE.Panel.SessionStartReason",
+  "FATEDICE.Panel.SessionStartDone",
+  "FATEDICE.Panel.Plus",
+  "FATEDICE.Panel.Minus",
+  "FATEDICE.Panel.Award",
+  "FATEDICE.Panel.AwardTitle",
+  "FATEDICE.Panel.Amount",
+  "FATEDICE.Panel.Note",
+  "FATEDICE.Panel.Log",
+  "FATEDICE.Panel.Empty",
+  "FATEDICE.Hud.OpenLog",
+  "FATEDICE.Hud.GmButton",
+];
