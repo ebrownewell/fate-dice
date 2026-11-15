@@ -1,0 +1,43 @@
+<section class="fate-dice-shop-editor">
+  <div class="fate-dice-editor-toolbar">
+    <button type="button" data-action="add"><i class="fa-solid fa-plus"></i> {{localize "FATEDICE.Editor.Add"}}</button>
+    <button type="button" data-action="import"><i class="fa-solid fa-file-import"></i> {{localize "FATEDICE.Editor.Import"}}</button>
+    <button type="button" data-action="export"><i class="fa-solid fa-file-export"></i> {{localize "FATEDICE.Editor.Export"}}</button>
+    <button type="button" data-action="example"><i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "FATEDICE.Editor.Example"}}</button>
+  </div>
+  <table class="fate-dice-editor-table">
+    <thead>
+      <tr>
+        <th>{{localize "FATEDICE.Editor.Name"}}</th>
+        <th>{{localize "FATEDICE.Editor.Cost"}}</th>
+        <th>{{localize "FATEDICE.Editor.Rules"}}</th>
+        <th>{{localize "FATEDICE.Editor.On"}}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="builtin">
+        <td><strong>{{localize "FATEDICE.Chat.FateReroll"}}</strong> <span class="tag">{{localize "FATEDICE.Editor.Builtin"}}</span></td>
+        <td>{{reroll.cost}}</td>
+        <td>{{localize "FATEDICE.Editor.RerollRules"}}</td>
+        <td><input type="checkbox" data-action="toggleReroll" {{#if reroll.enabled}}checked{{/if}}></td>
+        <td><button type="button" data-action="editReroll" title="{{localize "FATEDICE.Editor.Edit"}}"><i class="fa-solid fa-pen"></i></button></td>
+      </tr>
+      {{#each items}}
+        <tr data-item-id="{{id}}">
+          <td><strong>{{name}}</strong>{{#if flaw}} <span class="tag">{{localize "FATEDICE.Shop.FlawTag"}}</span>{{/if}}</td>
+          <td>{{#if flaw}}+{{/if}}{{cost}}{{#if costStep}} (+{{costStep}}){{/if}}</td>
+          <td>{{rules}}</td>
+          <td><input type="checkbox" data-action="toggle" data-item-id="{{id}}" {{#if enabled}}checked{{/if}}></td>
+          <td class="row-actions">
+            <button type="button" data-action="up" data-item-id="{{id}}" {{#if @first}}disabled{{/if}}><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" data-action="down" data-item-id="{{id}}" {{#if @last}}disabled{{/if}}><i class="fa-solid fa-arrow-down"></i></button>
+            <button type="button" data-action="edit" data-item-id="{{id}}"><i class="fa-solid fa-pen"></i></button>
+            <button type="button" data-action="delete" data-item-id="{{id}}"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{#unless items.length}}<p class="fate-dice-shop-empty">{{localize "FATEDICE.Editor.Empty"}}</p>{{/unless}}
+</section>

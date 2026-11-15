@@ -65,8 +65,25 @@ describe("toLogRows", () => {
     [{ action: "set" }, "FATEDICE.Log.Set"],
     [{ action: "refund" }, "FATEDICE.Log.Refund"],
     [{ action: "refund", automatic: true }, "FATEDICE.Log.AutoRefund"],
+    [
+      { action: "spend", delta: -1, source: { type: "shop", itemId: "i", name: "Rope" } },
+      "FATEDICE.Log.Bought",
+    ],
+    [
+      { action: "award", source: { type: "flaw", itemId: "i", name: "Greedy" } },
+      "FATEDICE.Log.Flaw",
+    ],
   ])("describes %j as %s", (extra, key) => {
     expect(toLogRows([entry(extra)], options)[0].whatKey).toBe(key);
+  });
+
+  it("names the shop item", () => {
+    const [row] = toLogRows(
+      [entry({ action: "spend", delta: -1, source: { type: "shop", itemId: "i", name: "Rope" } })],
+      options,
+    );
+    expect(row.itemName).toBe("Rope");
+    expect(toLogRows([entry({})], options)[0].itemName).toBeNull();
   });
 
   it("carries the note and the linked chat message", () => {

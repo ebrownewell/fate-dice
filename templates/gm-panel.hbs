@@ -1,7 +1,11 @@
 <section class="fate-dice-panel">
-  <button type="button" class="fate-dice-session-start" data-action="sessionStart">
-    <i class="fa-solid fa-sun"></i> {{localize "FATEDICE.Panel.SessionStart"}}
-  </button>
+  <div class="fate-dice-panel-toolbar">
+    <button type="button" class="fate-dice-session-start" data-action="sessionStart">
+      <i class="fa-solid fa-sun"></i> {{localize "FATEDICE.Panel.SessionStart"}}
+    </button>
+    <button type="button" data-action="editShop"><i class="fa-solid fa-store"></i> {{localize "FATEDICE.Panel.EditShop"}}</button>
+  </div>
+  <p class="fate-dice-panel-session">{{localize "FATEDICE.Panel.Session" number=session}}</p>
   {{#if rows.length}}
     <ul class="fate-dice-party">
       {{#each rows}}

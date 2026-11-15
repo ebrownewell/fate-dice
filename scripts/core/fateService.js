@@ -9,6 +9,7 @@ import { FateError } from "./errors.js";
 import { createKeyedQueue } from "./keyedQueue.js";
 import { LOG_FLAG, createLogEntry, findRefundableSpend, getActorLog, markRefunded } from "./log.js";
 import { awardPoints, refundPoints, setPoints, spendPoints } from "./points.js";
+import { checkPurchase } from "./shop.js";
 
 /** @typedef {import("./types.js").ActorLike} ActorLike */
 /** @typedef {import("./types.js").UserLike} UserLike */
@@ -36,6 +37,8 @@ import { awardPoints, refundPoints, setPoints, spendPoints } from "./points.js";
  * @param {(id: string) => UserLike | undefined} deps.getUser
  * @param {(id: string) => ActorLike | undefined} deps.getActor
  * @param {() => number} deps.getMaxPoints
+ * @param {() => number | undefined} [deps.getSession] The current session number.
+ * @param {() => import("./shop.js").ShopItem[]} [deps.getShopItems]
  * @param {() => string} [deps.newId]
  * @param {() => number} [deps.now]
  */
@@ -43,6 +46,8 @@ export function createFateService({
   getUser,
   getActor,
   getMaxPoints,
+  getSession = () => undefined,
+  getShopItems = () => [],
   newId = () => crypto.randomUUID(),
   now = () => Date.now(),
 }) {
@@ -94,6 +99,7 @@ export function createFateService({
         userId,
         reason,
         source,
+        session: getSession(),
       });
       if (link) ({ log, entry } = link(log, entry));
       await actor.update({
@@ -197,6 +203,41 @@ export function createFateService({
         compute: (current, log) =>
           refundPoints(current, -findRefundableSpend(log, entryId).delta, max),
         link: linkRefund(entryId),
+      });
+    },
+
+    /**
+     * Buy a shop item (or take a flaw) for a character the user owns.
+     * @param {{ actorId: string, itemId: string, note?: string }} payload
+     * @param {RequestContext} context
+     */
+    async purchase({ actorId, itemId, note = "" }, { userId }) {
+      const user = requireUser(userId);
+      const actor = requireActor(actorId);
+      requireOwner(user, actor);
+      const item = getShopItems().find((i) => i.id === itemId);
+      if (!item) throw new FateError("not-found", "That item isn't in the shop");
+      const flaw = item.kind === "flaw";
+      const max = getMaxPoints();
+      const session = getSession() ?? 0;
+      return applyChange(actor, userId, {
+        action: flaw ? "award" : "spend",
+        reason: typeof note === "string" ? note : "",
+        source: { type: flaw ? "flaw" : "shop", itemId: item.id, name: item.name },
+        compute: (current, log) => {
+          const check = checkPurchase({
+            item,
+            points: current,
+            max,
+            session,
+            log,
+            note: typeof note === "string" ? note : "",
+          });
+          if (!check.ok) throw new FateError(check.code, `Can't buy ${item.name} (${check.code})`);
+          return flaw
+            ? { before: current, after: current + check.gain, delta: check.gain }
+            : spendPoints(current, check.cost);
+        },
       });
     },
 

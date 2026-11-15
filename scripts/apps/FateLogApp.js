@@ -20,6 +20,7 @@ export class FateLogApp extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       refund: FateLogApp.#onRefund,
       viewRoll: FateLogApp.#onViewRoll,
+      shop: FateLogApp.#onShop,
     },
   };
 
@@ -72,7 +73,7 @@ export class FateLogApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isGM: game.user.isGM,
       rows: rows.map((row) => ({
         ...row,
-        what: game.i18n.localize(row.whatKey),
+        what: game.i18n.format(row.whatKey, { name: row.itemName ?? "" }),
         by: row.by ?? unknown,
       })),
     };
@@ -98,6 +99,11 @@ export class FateLogApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     if (!confirmed) return;
     await this.api.refundEntry(this.actor, entryId).catch(notifyError);
+  }
+
+  /** @this {FateLogApp} */
+  static #onShop() {
+    this.api.openShop(this.actor);
   }
 
   /** @this {FateLogApp} */

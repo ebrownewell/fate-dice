@@ -1,0 +1,38 @@
+{
+  "format": "fate-dice-shop",
+  "version": 1,
+  "name": "Fate Dice example shop",
+  "items": [
+    {
+      "id": "back-on-your-feet",
+      "name": "Back on Your Feet",
+      "description": "While at 0 HP, stand back up at the start of your turn with 1 HP.",
+      "cost": 2,
+      "limit": { "count": 1, "per": "session" }
+    },
+    {
+      "id": "lucky-find",
+      "name": "Lucky Find",
+      "description": "Introduce a small, useful detail or item into the scene (GM's call).",
+      "cost": 1,
+      "requiresNote": true
+    },
+    {
+      "id": "second-wind",
+      "name": "Dig Deep",
+      "description": "Regain hit points equal to your level. Costs 1 more each time this session.",
+      "cost": 1,
+      "costStep": 1,
+      "costStepPer": "session"
+    },
+    {
+      "id": "flaw-bad-habit",
+      "name": "Flaw: Bad Habit",
+      "description": "Your character's flaw causes real trouble for the party this scene. Describe how.",
+      "cost": 1,
+      "kind": "flaw",
+      "requiresNote": true,
+      "limit": { "count": 1, "per": "session" }
+    }
+  ]
+}

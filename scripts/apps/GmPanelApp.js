@@ -25,6 +25,7 @@ export class GmPanelApp extends HandlebarsApplicationMixin(ApplicationV2) {
       minus: GmPanelApp.#onMinus,
       award: GmPanelApp.#onAward,
       log: GmPanelApp.#onLog,
+      editShop: GmPanelApp.#onEditShop,
     },
   };
 
@@ -63,12 +64,13 @@ export class GmPanelApp extends HandlebarsApplicationMixin(ApplicationV2) {
           .join(", "),
       };
     });
-    return { rows, max };
+    return { rows, max, session: game.settings.get(MODULE_ID, "session") };
   }
 
   /** @this {GmPanelApp} */
   static async #onSessionStart() {
     const party = selectParty(game.actors);
+    await game.settings.set(MODULE_ID, "session", game.settings.get(MODULE_ID, "session") + 1);
     if (!party.length) return;
     const reason = game.i18n.localize("FATEDICE.Panel.SessionStartReason");
     const changes = await this.api.award(party, 1, reason).catch(notifyError);
@@ -116,6 +118,11 @@ export class GmPanelApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     if (!result) return;
     await this.api.award(actor, result.amount, result.reason).catch(notifyError);
+  }
+
+  /** @this {GmPanelApp} */
+  static #onEditShop() {
+    this.api.openShopEditor();
   }
 
   /** @this {GmPanelApp} */

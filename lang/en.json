@@ -48,7 +48,10 @@
       "timeout": "The GM didn't respond in time. Try again.",
       "unknown-action": "Fate Dice doesn't know how to do that.",
       "internal": "Something went wrong. The GM's console has details.",
-      "not-fateable": "That roll can't be fated."
+      "not-fateable": "That roll can't be fated.",
+      "limit-reached": "You've reached the limit for that.",
+      "note-required": "That needs a note explaining it.",
+      "at-max": "That character already has the maximum Fate Dice."
     },
     "Chat": {
       "Reroll": "Fate Reroll",
@@ -79,7 +82,9 @@
       "Reroll": "Fate Reroll",
       "Set": "Set by GM",
       "Refund": "Refund",
-      "AutoRefund": "Automatic refund (the reroll failed)"
+      "AutoRefund": "Automatic refund (the reroll failed)",
+      "Bought": "Bought: {name}",
+      "Flaw": "Flaw: {name}"
     },
     "Panel": {
       "Title": "Fate Dice",
@@ -93,11 +98,86 @@
       "Amount": "Amount",
       "Note": "Note (optional)",
       "Log": "Log",
-      "Empty": "No player characters yet. Assign characters to players in User Configuration."
+      "Empty": "No player characters yet. Assign characters to players in User Configuration.",
+      "EditShop": "Edit shop",
+      "Session": "Session {number}"
     },
     "Hud": {
-      "OpenLog": "Your Fate Dice. Click for your log, drag to move.",
-      "GmButton": "Fate Dice"
+      "GmButton": "Fate Dice",
+      "OpenShop": "Your Fate Dice. Click to spend them, drag to move."
+    },
+    "Shop": {
+      "Title": "Fate Dice: {name}",
+      "Open": "Shop",
+      "History": "History",
+      "RerollDescription": "Use the Fate Reroll button on any of your d20 rolls in chat.",
+      "FlawTag": "flaw",
+      "Take": "Take",
+      "Buy": "Buy",
+      "Empty": "Your GM hasn't added anything to the shop yet.",
+      "Limit": {
+        "session": "{used}/{count} this session",
+        "campaign": "{used}/{count} this campaign"
+      },
+      "ConfirmBuy": "Spend {amount} Fate Dice on <strong>{name}</strong>?",
+      "ConfirmFlaw": "Take <strong>{name}</strong> and gain {amount} Fate Dice?",
+      "NoteRequired": "Note (required)",
+      "NoteOptional": "Note (optional)",
+      "ChatSpent": "{actor} spent {amount} Fate Dice on {item}",
+      "ChatFlaw": "{actor} took a flaw and gained {amount} Fate Dice: {item}"
+    },
+    "Editor": {
+      "Title": "Fate Dice shop",
+      "Add": "Add item",
+      "Import": "Import",
+      "Export": "Export",
+      "Example": "Load example",
+      "Name": "Name",
+      "Cost": "Cost",
+      "Rules": "Rules",
+      "On": "On",
+      "Builtin": "built in",
+      "RerollRules": "Reroll any d20 roll from chat",
+      "Edit": "Edit",
+      "Empty": "No items yet. Add one, import a shop file, or load the example.",
+      "LimitRule": {
+        "session": "{count} per session",
+        "campaign": "{count} per campaign"
+      },
+      "StepRule": {
+        "session": "+{step} each time (resets each session)",
+        "campaign": "+{step} each time"
+      },
+      "NoteRule": "needs a note",
+      "Description": "Description (plain text)",
+      "Kind": "Type",
+      "KindPurchase": "Purchase (costs Fate Dice)",
+      "KindFlaw": "Flaw (grants Fate Dice)",
+      "CostStep": "Extra cost per purchase",
+      "ResetsSession": "resets each session",
+      "ResetsNever": "never resets",
+      "Limit": "Limit",
+      "NoLimit": "none",
+      "PerSession": "per session",
+      "PerCampaign": "per campaign",
+      "RequiresNote": "Player must add a note",
+      "Save": "Save",
+      "DeleteTitle": "Delete item",
+      "DeleteConfirm": "Delete <strong>{name}</strong> from the shop? Characters' logs keep their history.",
+      "RerollMore": "The fate die bonus and where Fate Reroll is allowed are in the module settings.",
+      "ImportWarnings": "Some things in the file were skipped:",
+      "ImportSettings": "Also apply the file's rule settings",
+      "ImportTitle": "Import shop",
+      "ImportSummary": "<strong>{name}</strong>: {total} items ({added} new, {duplicates} with names already in your shop).",
+      "ImportMode": "Items with the same name",
+      "ModeUpdate": "Update mine from the file",
+      "ModeKeep": "Keep mine",
+      "ModeReplace": "Replace my whole shop with the file",
+      "Imported": "Imported {count} items.",
+      "ExportSettings": "Include your rule settings (max Fate Dice, Fate Reroll cost and bonus) in the file?",
+      "MenuName": "Fate Dice shop",
+      "MenuLabel": "Edit shop",
+      "MenuHint": "Choose what players can spend Fate Dice on, and import or export shop files."
     }
   }
 }

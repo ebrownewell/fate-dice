@@ -37,9 +37,9 @@ export function registerHud({ api }) {
       labels: {
         title: game.i18n.localize("FATEDICE.Title"),
         gmButton: game.i18n.localize("FATEDICE.Hud.GmButton"),
-        openLog: game.i18n.localize("FATEDICE.Hud.OpenLog"),
+        openLog: game.i18n.localize("FATEDICE.Hud.OpenShop"),
       },
-      onOpen: () => (game.user.isGM ? GmPanelApp.show(api) : api.openLog(game.user.character)),
+      onOpen: () => (game.user.isGM ? GmPanelApp.show(api) : api.openShop(game.user.character)),
     });
     place();
   }

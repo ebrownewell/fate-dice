@@ -52,6 +52,9 @@ await fate.fateReroll(message); // same as clicking Fate Reroll on that chat car
 await fate.refundEntry(actor, entryId); // GM only: refund a spend from the character's log
 fate.openLog(actor); // open a character's Fate Dice log
 fate.openPanel(); // GM: open the Fate Dice panel
+fate.openShop(actor); // open a character's shop
+fate.openShopEditor(); // GM: edit the shop, import/export
+await fate.purchase(actor, itemId, "note"); // buy a shop item (or take a flaw)
 ```
 
 Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject

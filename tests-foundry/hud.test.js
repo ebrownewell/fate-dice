@@ -106,13 +106,13 @@ describe("player HUD", () => {
       });
   });
 
-  it("opens the player's log when clicked", async () => {
+  it("opens the player's shop when clicked", async () => {
     const opened = await player.page.evaluate(async () => {
       document
         .querySelector("#fate-dice-hud button")
         ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
       await new Promise((r) => setTimeout(r, 500));
-      return Boolean(document.getElementById(`fate-dice-log-${game.user.character.id}`));
+      return Boolean(document.getElementById(`fate-dice-shop-${game.user.character.id}`));
     });
     expect(opened).toBe(true);
   });

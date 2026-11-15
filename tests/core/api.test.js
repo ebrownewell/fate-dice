@@ -63,6 +63,22 @@ describe("createApi", () => {
     expect(bus.request).toHaveBeenCalledWith("refund", { actorId: "a", entryId: "e1" });
   });
 
+  it("buys a shop item, with an optional note", async () => {
+    const { bus, api } = setup();
+    await api.purchase(fakeActor("a"), "rope");
+    await api.purchase("a", "flaw", "Started a brawl");
+    expect(bus.request).toHaveBeenNthCalledWith(1, "purchase", {
+      actorId: "a",
+      itemId: "rope",
+      note: "",
+    });
+    expect(bus.request).toHaveBeenNthCalledWith(2, "purchase", {
+      actorId: "a",
+      itemId: "flaw",
+      note: "Started a brawl",
+    });
+  });
+
   it("fates a chat message, given as a document or an id", async () => {
     const { bus, api } = setup();
     await api.fateReroll({ id: "m1" });

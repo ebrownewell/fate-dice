@@ -8,6 +8,7 @@ import { createFateRerollHandler } from "./core/fateRerollHandler.js";
 import { createFateService } from "./core/fateService.js";
 import { createRequestBus } from "./core/requestBus.js";
 import { registerSettings } from "./core/settings.js";
+import { TEMPLATES } from "./core/templates.js";
 import { registerChatHooks } from "./foundry/chatHooks.js";
 import { registerDeathSaveHooks } from "./foundry/deathSaveHooks.js";
 import { registerSheetHooks } from "./foundry/sheetHooks.js";
@@ -16,9 +17,14 @@ import { GmPanelApp } from "./apps/GmPanelApp.js";
 import { registerHud } from "./foundry/hudHooks.js";
 import { createFoundryFateRerollDeps } from "./foundry/fateRerollDeps.js";
 import { registerQuenchTests } from "./quench.js";
+import { ShopApp, getShopItems } from "./apps/ShopApp.js";
+import { ShopEditorApp } from "./apps/ShopEditorApp.js";
+import { createPurchaseHandler, registerShopHooks, registerShopMenu } from "./foundry/shopHooks.js";
 
 Hooks.once("init", () => {
   registerSettings(game.settings, MODULE_ID);
+  foundry.applications.handlebars.loadTemplates(TEMPLATES);
+  registerShopMenu();
   if (game.system.id === "dnd5e") registerDeathSaveHooks();
 });
 
@@ -27,6 +33,8 @@ Hooks.once("ready", () => {
     getUser: (id) => game.users.get(id),
     getActor: (id) => game.actors.get(id),
     getMaxPoints: () => game.settings.get(MODULE_ID, "maxPoints"),
+    getSession: () => game.settings.get(MODULE_ID, "session"),
+    getShopItems,
   });
   const reroll = createFateRerollHandler(createFoundryFateRerollDeps({ service }));
 
@@ -41,6 +49,7 @@ Hooks.once("ready", () => {
       setPoints: service.setPoints,
       refund: service.refund,
       fateReroll: reroll.fateReroll,
+      purchase: createPurchaseHandler(service),
     },
   });
 
@@ -49,12 +58,18 @@ Hooks.once("ready", () => {
     /** Open a character's Fate Dice log. @param {any} actor An Actor or its id. */
     openLog: (/** @type {any} */ actor) =>
       FateLogApp.show(typeof actor === "string" ? game.actors.get(actor) : actor, api),
+    /** Open a character's Fate Dice shop. @param {any} actor An Actor or its id. */
+    openShop: (/** @type {any} */ actor) =>
+      ShopApp.show(typeof actor === "string" ? game.actors.get(actor) : actor, api),
     /** Open the GM's Fate Dice panel. */
     openPanel: () => GmPanelApp.show(api),
+    /** GM: open the shop editor. */
+    openShopEditor: () => new ShopEditorApp().render({ force: true }),
   };
   registerChatHooks({ bus });
   registerSheetHooks({ api });
   registerHud({ api });
+  registerShopHooks();
   game.modules.get(MODULE_ID).api = api;
   Hooks.callAll(`${MODULE_ID}.ready`, game.modules.get(MODULE_ID).api);
   // Messages already in the chat log rendered before the hooks existed.

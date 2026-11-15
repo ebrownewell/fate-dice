@@ -18,15 +18,45 @@ function setup() {
   ];
   let nextId = 0;
   let clock = 1000;
+  let session = 1;
+  /** @type {any[]} */
+  const shop = [
+    {
+      id: "feet",
+      name: "Back on Your Feet",
+      description: "",
+      cost: 1,
+      kind: "purchase",
+      costStep: 0,
+      costStepPer: "campaign",
+      limit: { count: 1, per: "session" },
+      requiresNote: false,
+      enabled: true,
+    },
+    {
+      id: "flaw",
+      name: "Flaw: Bad Habit",
+      description: "",
+      cost: 1,
+      kind: "flaw",
+      costStep: 0,
+      costStepPer: "campaign",
+      limit: { count: null, per: "session" },
+      requiresNote: true,
+      enabled: true,
+    },
+  ];
   const service = createFateService({
     getUser: (id) => users.find((u) => u.id === id),
     getActor: (id) => actors.find((a) => a.id === id),
     getMaxPoints: () => 3,
+    getSession: () => session,
+    getShopItems: () => shop,
     newId: () => `e${++nextId}`,
     now: () => clock++,
   });
   const [alicePc, bobPc] = actors;
-  return { service, alicePc, bobPc };
+  return { service, alicePc, bobPc, setSession: (/** @type {number} */ n) => (session = n) };
 }
 
 beforeEach(() => {
@@ -246,6 +276,7 @@ describe("the log", () => {
       {
         id: change[0].entryId,
         time: expect.any(Number),
+        session: 1,
         action: "award",
         before: 1,
         after: 2,
@@ -280,6 +311,87 @@ describe("the log", () => {
       ctx.service.spend({ actorId: "alice-pc", cost: 5 }, { userId: "alice" }),
     ).rejects.toMatchObject({ code: "insufficient-points" });
     expect(getActorLog(ctx.alicePc)).toEqual([]);
+  });
+});
+
+describe("purchase", () => {
+  it("lets an owner buy a shop item, logging what was bought and the session", async () => {
+    const change = await ctx.service.purchase(
+      { actorId: "alice-pc", itemId: "feet" },
+      { userId: "alice" },
+    );
+    expect(change).toMatchObject({ action: "spend", before: 1, after: 0, delta: -1 });
+    expect(getActorLog(ctx.alicePc).at(-1)).toMatchObject({
+      action: "spend",
+      session: 1,
+      source: { type: "shop", itemId: "feet", name: "Back on Your Feet" },
+    });
+  });
+
+  it("enforces the item's limit, which resets next session", async () => {
+    await ctx.service.setPoints({ actorId: "alice-pc", value: 3 }, { userId: "gm" });
+    await ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" });
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "limit-reached" });
+    ctx.setSession(2);
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" }),
+    ).resolves.toMatchObject({ after: 1 });
+  });
+
+  it("can't get past a limit with two purchases at the same moment", async () => {
+    await ctx.service.setPoints({ actorId: "alice-pc", value: 3 }, { userId: "gm" });
+    const results = await Promise.allSettled([
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" }),
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" }),
+    ]);
+    expect(results.map((r) => r.status).sort()).toEqual(["fulfilled", "rejected"]);
+    expect(getActorPoints(ctx.alicePc)).toBe(2);
+  });
+
+  it("taking a flaw grants Fate Dice and records the note", async () => {
+    const change = await ctx.service.purchase(
+      { actorId: "alice-pc", itemId: "flaw", note: "Picked a fight with the guard" },
+      { userId: "alice" },
+    );
+    expect(change).toMatchObject({ action: "award", before: 1, after: 2, delta: 1 });
+    expect(getActorLog(ctx.alicePc).at(-1)).toMatchObject({
+      reason: "Picked a fight with the guard",
+      source: { type: "flaw", itemId: "flaw", name: "Flaw: Bad Habit" },
+    });
+  });
+
+  it("requires a note when the item asks for one", async () => {
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "flaw" }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "note-required" });
+  });
+
+  it("refuses someone else's character, an unknown item, and an unaffordable one", async () => {
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "bob" }),
+    ).rejects.toMatchObject({ code: "not-permitted" });
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "nope" }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "not-found" });
+    await expect(
+      ctx.service.purchase({ actorId: "bob-pc", itemId: "feet" }, { userId: "bob" }),
+    ).rejects.toMatchObject({ code: "insufficient-points" });
+    expect(getActorLog(ctx.bobPc)).toEqual([]);
+  });
+
+  it("can be refunded from the log like any spend", async () => {
+    const change = await ctx.service.purchase(
+      { actorId: "alice-pc", itemId: "feet" },
+      { userId: "alice" },
+    );
+    await ctx.service.refund({ actorId: "alice-pc", entryId: change.entryId }, { userId: "gm" });
+    expect(getActorPoints(ctx.alicePc)).toBe(1);
+    // A refunded purchase no longer counts towards the limit.
+    await expect(
+      ctx.service.purchase({ actorId: "alice-pc", itemId: "feet" }, { userId: "alice" }),
+    ).resolves.toMatchObject({ after: 0 });
   });
 });
 

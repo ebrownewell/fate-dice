@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   CLIENT_SETTING_DEFINITIONS,
   SETTING_DEFINITIONS,
+  STATE_SETTING_DEFINITIONS,
   getFateRules,
   readSettings,
   registerSettings,
@@ -59,12 +60,31 @@ describe("CLIENT_SETTING_DEFINITIONS", () => {
   });
 });
 
+describe("STATE_SETTING_DEFINITIONS", () => {
+  it("stores the session number and the shop as hidden world settings", () => {
+    expect(STATE_SETTING_DEFINITIONS.session).toMatchObject({
+      scope: "world",
+      config: false,
+      type: Number,
+      default: 1,
+    });
+    expect(STATE_SETTING_DEFINITIONS.shop).toMatchObject({
+      scope: "world",
+      config: false,
+      type: Object,
+      default: { items: [] },
+    });
+  });
+});
+
 describe("registerSettings", () => {
   it("registers each definition under the module id", () => {
     const api = { register: vi.fn(), get: vi.fn() };
     registerSettings(api, "fate-dice");
     expect(api.register).toHaveBeenCalledTimes(
-      Object.keys(SETTING_DEFINITIONS).length + Object.keys(CLIENT_SETTING_DEFINITIONS).length,
+      Object.keys(SETTING_DEFINITIONS).length +
+        Object.keys(CLIENT_SETTING_DEFINITIONS).length +
+        Object.keys(STATE_SETTING_DEFINITIONS).length,
     );
     expect(api.register).toHaveBeenCalledWith(
       "fate-dice",

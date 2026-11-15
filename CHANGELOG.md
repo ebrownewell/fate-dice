@@ -6,6 +6,21 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Shop**: GM-defined things to spend Fate Dice on.
+  - Items have a cost, a plain-text description, an optional per-purchase cost increase (resetting each session or never), an optional limit per session or campaign, and can require a note. **Flaws** grant Fate Dice instead (capped at the maximum).
+  - Players open it from the HUD or the Fate Dice sheet button; it shows prices, limits used and why an item is unavailable. Buying asks for confirmation (and the note); the GM's client checks and applies it, posts it to chat and logs it ("Bought: …" / "Flaw: …"). Purchases can be refunded from the log, which also frees up their limit.
+  - **Sessions**: "Start of session" advances a session counter, so per-session limits and costs reset.
+  - **Shop editor** for the GM (GM panel → Edit shop, or module settings): add, edit, reorder, enable/disable and delete items; set the built-in Fate Reroll's cost and switch it off.
+  - **JSON import/export**: export the shop (optionally with your rule settings); import with a preview, choosing to update same-named items, keep yours, or replace the whole shop. Files are validated; descriptions are plain text, so a shared file can't inject HTML.
+  - An example shop (Load example).
+
+### Changed
+
+- The HUD and the sheet's Fate Dice button open the shop (which links to the history).
+
+### Fixed
+
+- Windows took ~4 seconds to open the first time in a session; templates are now preloaded at startup.
 - **Fate Dice HUD**: players see their character's Fate Dice as dots (click for their log); GMs get a button for the Fate Dice panel. Drag to move; the position is remembered per client. Players can hide it ("Show Fate Dice HUD").
 - **GM panel** (`api.openPanel()`): every player character with owners and Fate Dice, +1 / −1, "Award…" with an amount and note, their log, and **Start of session: +1 everyone** (capped, logged as "Session start").
 - `api.award(actors, amount, reason)` takes an optional note.

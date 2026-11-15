@@ -13,12 +13,15 @@
  * @property {number} after
  * @property {string | null} by Who made the change (null if they no longer exist).
  * @property {string | null} messageId Linked chat message, for rerolls.
+ * @property {string | null} itemName The shop item or flaw, if any.
  * @property {boolean} refunded
  * @property {boolean} canRefund
  */
 
 /** @param {LogEntry} entry */
 function whatKey(entry) {
+  if (entry.source?.type === "shop") return "FATEDICE.Log.Bought";
+  if (entry.source?.type === "flaw") return "FATEDICE.Log.Flaw";
   if (entry.action === "spend") {
     return entry.source?.type === "reroll" ? "FATEDICE.Log.Reroll" : "FATEDICE.Log.Spend";
   }
@@ -36,6 +39,8 @@ export const LOG_LABEL_KEYS = [
   "FATEDICE.Log.Set",
   "FATEDICE.Log.Refund",
   "FATEDICE.Log.AutoRefund",
+  "FATEDICE.Log.Bought",
+  "FATEDICE.Log.Flaw",
 ];
 
 /**
@@ -57,7 +62,9 @@ export function toLogRows(log, { isGM, getUserName, formatTime }) {
     delta: entry.delta > 0 ? `+${entry.delta}` : String(entry.delta),
     after: entry.after,
     by: getUserName(entry.userId) ?? null,
-    messageId: entry.source?.messageId ?? null,
+    messageId: entry.source?.type === "reroll" ? entry.source.messageId : null,
+    itemName:
+      entry.source?.type === "shop" || entry.source?.type === "flaw" ? entry.source.name : null,
     refunded: Boolean(entry.refundedBy),
     canRefund: isGM && entry.action === "spend" && entry.delta < 0 && !entry.refundedBy,
   }));

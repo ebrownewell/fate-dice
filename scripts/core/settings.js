@@ -71,6 +71,12 @@ export const CLIENT_SETTING_DEFINITIONS = {
   },
 };
 
+/** World state kept in settings, hidden from the settings menu. */
+export const STATE_SETTING_DEFINITIONS = {
+  session: { name: "Session number", scope: "world", config: false, type: Number, default: 1 },
+  shop: { name: "Shop", scope: "world", config: false, type: Object, default: { items: [] } },
+};
+
 /** @typedef {keyof typeof SETTING_DEFINITIONS} SettingKey */
 
 /**
@@ -78,7 +84,11 @@ export const CLIENT_SETTING_DEFINITIONS = {
  * @param {string} moduleId
  */
 export function registerSettings(api, moduleId) {
-  for (const definitions of [SETTING_DEFINITIONS, CLIENT_SETTING_DEFINITIONS]) {
+  for (const definitions of [
+    SETTING_DEFINITIONS,
+    CLIENT_SETTING_DEFINITIONS,
+    STATE_SETTING_DEFINITIONS,
+  ]) {
     for (const [key, definition] of Object.entries(definitions)) {
       api.register(moduleId, key, definition);
     }

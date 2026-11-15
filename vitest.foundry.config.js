@@ -9,5 +9,7 @@ export default defineConfig({
     testTimeout: 120_000,
     hookTimeout: 120_000,
     fileParallelism: false,
+    // Freshly joined browsers are slow for a few seconds; give syncs time.
+    expect: { poll: { timeout: 10_000 } },
   },
 });

@@ -39,6 +39,10 @@ export function createApi({ bus }) {
     /** @param {ActorRef} actor @param {string} entryId A spend in the actor's log. GM only. */
     refundEntry: (actor, entryId) => bus.request("refund", { actorId: toId(actor), entryId }),
 
+    /** @param {ActorRef} actor @param {string} itemId @param {string} [note] */
+    purchase: (actor, itemId, note = "") =>
+      bus.request("purchase", { actorId: toId(actor), itemId, note }),
+
     /** @param {{ id: string } | string} message A chat message with a d20 roll. */
     fateReroll: (message) =>
       bus.request("fateReroll", { messageId: typeof message === "string" ? message : message.id }),

@@ -1,0 +1,36 @@
+<section class="fate-dice-shop">
+  <header class="fate-dice-shop-header">
+    <span class="fate-dice-dots">
+      {{#each dots}}<span class="fate-dice-dot{{#if this}} filled{{/if}}"></span>{{/each}}
+    </span>
+    <span class="fate-dice-shop-balance">{{points}} / {{max}}</span>
+    <button type="button" data-action="history"><i class="fa-solid fa-clock-rotate-left"></i> {{localize "FATEDICE.Shop.History"}}</button>
+  </header>
+  <ul class="fate-dice-shop-items">
+    {{#if reroll}}
+      <li class="fate-dice-shop-item builtin">
+        <div class="fate-dice-shop-item-main">
+          <strong>{{localize "FATEDICE.Chat.FateReroll"}}</strong>
+          <p class="description">{{localize "FATEDICE.Shop.RerollDescription"}}</p>
+        </div>
+        <span class="price">{{reroll.cost}}</span>
+      </li>
+    {{/if}}
+    {{#each items}}
+      <li class="fate-dice-shop-item{{#unless available}} unavailable{{/unless}}" data-item-id="{{id}}">
+        <div class="fate-dice-shop-item-main">
+          <strong>{{name}}</strong>
+          {{#if flaw}}<span class="tag">{{localize "FATEDICE.Shop.FlawTag"}}</span>{{/if}}
+          {{#if limitText}}<span class="tag">{{limitText}}</span>{{/if}}
+          {{#if description}}<p class="description">{{description}}</p>{{/if}}
+          {{#unless available}}<p class="reason">{{reason}}</p>{{/unless}}
+        </div>
+        <span class="price">{{#if flaw}}+{{/if}}{{price}}</span>
+        <button type="button" data-action="buy" data-item-id="{{id}}" {{#unless available}}disabled{{/unless}}>
+          {{#if flaw}}{{localize "FATEDICE.Shop.Take"}}{{else}}{{localize "FATEDICE.Shop.Buy"}}{{/if}}
+        </button>
+      </li>
+    {{/each}}
+  </ul>
+  {{#unless items.length}}<p class="fate-dice-shop-empty">{{localize "FATEDICE.Shop.Empty"}}</p>{{/unless}}
+</section>

@@ -41,4 +41,11 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] The GM panel reads well with 5+ characters and long names.
 - [ ] The "Award…" dialog is clear; its note shows in the character's log.
 
-<!-- Add sections as features land: shop, nominations. -->
+### Shop
+
+- [ ] Shop and editor read well in both themes, with long descriptions and many items.
+- [ ] The item edit dialog is clear; invalid input shows a helpful error.
+- [ ] Importing a real shared file shows a sensible preview; warnings are readable.
+- [ ] The purchase announcement in chat looks right, with and without a note.
+
+<!-- Add sections as features land: nominations. -->

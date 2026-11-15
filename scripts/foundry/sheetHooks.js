@@ -15,7 +15,7 @@ export function registerSheetHooks({ api }) {
         icon: "fa-solid fa-dice-d20",
         label: "FATEDICE.Log.Open",
         action: "fateDiceLog",
-        onClick: () => FateLogApp.show(actor, api),
+        onClick: () => api.openShop(actor),
       });
     },
   );

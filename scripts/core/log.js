@@ -19,7 +19,9 @@ import { FateError } from "./errors.js";
  * @property {number} delta
  * @property {string} userId Who made the change.
  * @property {string} [reason] A note, e.g. why the GM awarded it.
- * @property {{ type: "reroll", messageId: string }} [source] What the points were spent on.
+ * @property {number} [session] The session number when it happened.
+ * @property {{ type: "reroll", messageId: string } | { type: "shop" | "flaw", itemId: string, name: string }} [source]
+ *   What the points were spent on (or, for a flaw, gained from).
  * @property {string} [refundOf] On a refund: the spend it refunds.
  * @property {string} [refundedBy] On a spend: the refund that undid it.
  * @property {true} [automatic] On a refund made automatically after a failure.
@@ -36,9 +38,10 @@ export const LOG_FLAG = "log";
  * @param {string} input.userId
  * @param {string} [input.reason]
  * @param {LogEntry["source"]} [input.source]
+ * @param {number} [input.session]
  * @returns {LogEntry}
  */
-export function createLogEntry({ id, time, action, change, userId, reason, source }) {
+export function createLogEntry({ id, time, action, change, userId, reason, source, session }) {
   /** @type {LogEntry} */
   const entry = {
     id,
@@ -51,6 +54,7 @@ export function createLogEntry({ id, time, action, change, userId, reason, sourc
   };
   if (typeof reason === "string" && reason.trim()) entry.reason = reason.trim();
   if (source) entry.source = source;
+  if (typeof session === "number") entry.session = session;
   return entry;
 }
 

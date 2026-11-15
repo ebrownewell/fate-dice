@@ -182,3 +182,123 @@
   width: auto;
   padding: 0 0.4rem;
 }
+
+/* Shop */
+
+.fate-dice-shop-app .window-content,
+.fate-dice-shop-editor-app .window-content {
+  padding: 0.5rem;
+}
+
+.fate-dice-shop-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.fate-dice-shop-header button {
+  width: auto;
+  margin-left: auto;
+}
+
+.fate-dice-shop-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fate-dice-shop-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--color-border-light-2, rgba(0, 0, 0, 0.15));
+}
+
+.fate-dice-shop-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.fate-dice-shop-item .description {
+  margin: 0.15rem 0 0;
+  white-space: pre-line;
+}
+
+.fate-dice-shop-item .reason {
+  margin: 0.15rem 0 0;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.fate-dice-shop-item.unavailable .fate-dice-shop-item-main {
+  opacity: 0.7;
+}
+
+.fate-dice-shop-item .price {
+  min-width: 1.5rem;
+  font-weight: bold;
+  text-align: right;
+}
+
+.fate-dice-shop-item button {
+  width: auto;
+}
+
+.fate-dice .tag {
+  margin-left: 0.25rem;
+  padding: 0 0.3rem;
+  border-radius: 3px;
+  background: var(--color-border-light-2, rgba(0, 0, 0, 0.1));
+  font-size: var(--font-size-11, 11px);
+}
+
+.fate-dice-shop-empty {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.fate-dice-editor-toolbar,
+.fate-dice-panel-toolbar {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.fate-dice-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fate-dice-editor-table th,
+.fate-dice-editor-table td {
+  padding: 0.2rem 0.4rem;
+  text-align: left;
+}
+
+.fate-dice-editor-table .row-actions {
+  white-space: nowrap;
+}
+
+.fate-dice-editor-table .row-actions button,
+.fate-dice-editor-table .builtin button {
+  display: inline-flex;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  justify-content: center;
+}
+
+.fate-dice-panel-session {
+  margin: 0 0 0.25rem;
+  font-size: var(--font-size-12, 12px);
+  opacity: 0.75;
+}
+
+.fate-dice-purchase blockquote {
+  margin: 0.25rem 0 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--color-warm-2, #c9593f);
+  font-style: italic;
+}
