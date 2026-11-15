@@ -47,6 +47,12 @@ describe("createApi", () => {
     expect(bus.request).toHaveBeenCalledWith("refund", { actorId: "a", amount: 1 });
   });
 
+  it("refunds a logged spend", async () => {
+    const { bus, api } = setup();
+    await api.refundEntry(fakeActor("a"), "e1");
+    expect(bus.request).toHaveBeenCalledWith("refund", { actorId: "a", entryId: "e1" });
+  });
+
   it("fates a chat message, given as a document or an id", async () => {
     const { bus, api } = setup();
     await api.fateReroll({ id: "m1" });

@@ -80,7 +80,11 @@ export function createFateRerollHandler(deps) {
 
         /** @type {ChangeRecord} */
         const change = await deps.service.spend(
-          { actorId: info.actorId, cost: settings.rerollCost },
+          {
+            actorId: info.actorId,
+            cost: settings.rerollCost,
+            source: { type: "reroll", messageId },
+          },
           { userId },
         );
 

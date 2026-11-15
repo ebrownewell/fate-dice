@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { SETTING_DEFINITIONS } from "../scripts/core/settings.js";
 import { ERROR_CODES } from "../scripts/core/errors.js";
 import { CHAT_LABEL_KEYS } from "../scripts/foundry/chatHooks.js";
+import { LOG_LABEL_KEYS } from "../scripts/ui/logRows.js";
+import { LOG_APP_KEYS } from "../scripts/apps/labels.js";
 
 const en = JSON.parse(readFileSync(new URL("../lang/en.json", import.meta.url), "utf8"));
 
@@ -16,6 +18,10 @@ describe("English translations", () => {
   });
 
   it.each(Object.values(CHAT_LABEL_KEYS))("has chat label %s", (key) => {
+    expect(lookup(key)).toEqual(expect.any(String));
+  });
+
+  it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS])("has log label %s", (key) => {
     expect(lookup(key)).toEqual(expect.any(String));
   });
 

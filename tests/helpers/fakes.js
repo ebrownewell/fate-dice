@@ -30,6 +30,21 @@ export function fakeActor(id, { owners = [], flags = {} } = {}) {
       (store[scope] ??= {})[key] = value;
       return this;
     },
+    updateCalls: 0,
+    /**
+     * Apply a Foundry-style update with dotted keys, e.g. { "flags.x.points": 2 }.
+     * @param {Record<string, unknown>} changes
+     */
+    async update(changes) {
+      this.updateCalls += 1;
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      for (const [path, value] of Object.entries(changes)) {
+        const [root, scope, key] = path.split(".");
+        if (root !== "flags" || !scope || !key) throw new Error(`fake update can't set ${path}`);
+        (store[scope] ??= {})[key] = structuredClone(value);
+      }
+      return this;
+    },
     /** @param {{ id: string }} user @param {string} level */
     testUserPermission(user, level) {
       return level === "OWNER" && owners.includes(user.id);

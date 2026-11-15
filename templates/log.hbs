@@ -1,0 +1,46 @@
+<section class="fate-dice-log">
+  <p class="fate-dice-log-balance">
+    {{localize "FATEDICE.Log.Balance"}}: <strong>{{points}}</strong> / {{max}}
+  </p>
+  {{#if rows.length}}
+    <table class="fate-dice-log-table">
+      <thead>
+        <tr>
+          <th>{{localize "FATEDICE.Log.When"}}</th>
+          <th>{{localize "FATEDICE.Log.What"}}</th>
+          <th>{{localize "FATEDICE.Log.Change"}}</th>
+          <th>{{localize "FATEDICE.Log.After"}}</th>
+          <th>{{localize "FATEDICE.Log.By"}}</th>
+          {{#if isGM}}<th></th>{{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+          <tr data-entry-id="{{id}}" class="{{#if refunded}}refunded{{/if}}">
+            <td class="when">{{time}}</td>
+            <td class="what">
+              {{what}}
+              {{#if note}}<span class="note">: {{note}}</span>{{/if}}
+              {{#if messageId}}
+                <a class="view-roll" data-action="viewRoll" data-message-id="{{messageId}}">{{localize "FATEDICE.Log.ViewRoll"}}</a>
+              {{/if}}
+              {{#if refunded}}<span class="refunded-tag">({{localize "FATEDICE.Log.Refunded"}})</span>{{/if}}
+            </td>
+            <td class="delta">{{delta}}</td>
+            <td class="after">{{after}}</td>
+            <td class="by">{{by}}</td>
+            {{#if ../isGM}}
+              <td class="actions">
+                {{#if canRefund}}
+                  <button type="button" data-action="refund" data-entry-id="{{id}}">{{localize "FATEDICE.Log.RefundButton"}}</button>
+                {{/if}}
+              </td>
+            {{/if}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="fate-dice-log-empty">{{localize "FATEDICE.Log.Empty"}}</p>
+  {{/if}}
+</section>

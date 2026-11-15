@@ -6,6 +6,12 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Per-character log** of every award, spend, Fate Reroll, GM set and refund: when, the change, the balance after, who, and an optional note.
+  - Saved in the same update as the point change, so the log and balance always agree.
+  - A **Fate Dice** button in the character sheet header opens it for the owner and the GM (also `api.openLog(actor)`).
+  - Fate Reroll entries link to their roll ("view roll").
+  - The GM can refund a spend from the log; the spend is marked refunded and the two entries are linked. Each spend can be refunded once.
+  - Automatic refunds after a failed reroll are logged as such.
 - **Fate Reroll** on dnd5e d20 rolls: attacks, saves, ability and skill checks, tool checks and initiative.
   - A "Fate Reroll (cost)" button on the roller's own chat cards; disabled with a reason when they can't afford it.
   - The GM's client spends the cost, rolls the fate die and posts the fated roll as a real dnd5e roll from the player, with a banner such as "Fate Reroll: 7 → 17 (+10), kept".

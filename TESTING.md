@@ -27,4 +27,11 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] Dice sound plays for the fated roll.
 - [ ] The button looks right on a whispered/blind roll (GM roll modes).
 
-<!-- Add sections as features land: HUD, shop, logs, nominations. -->
+### Log window
+
+- [ ] The Fate Dice button shows in the character sheet header (owner and GM) and opens the log.
+- [ ] The log reads well in light and dark themes and with a long history (scrolls, header stays put).
+- [ ] "view roll" opens the roll in a popout; on a deleted message it says so.
+- [ ] The refund confirmation reads correctly.
+
+<!-- Add sections as features land: HUD, shop, nominations. -->

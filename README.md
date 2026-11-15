@@ -49,6 +49,8 @@ await fate.spend(actor, 1); // owner or GM
 await fate.setPoints(actor, 3); // GM only
 await fate.refund(actor, 1); // GM only, capped at the maximum
 await fate.fateReroll(message); // same as clicking Fate Reroll on that chat card
+await fate.refundEntry(actor, entryId); // GM only: refund a spend from the character's log
+fate.openLog(actor); // open a character's Fate Dice log
 ```
 
 Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject

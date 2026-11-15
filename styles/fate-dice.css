@@ -25,3 +25,52 @@
   font-size: var(--font-size-12, 12px);
   font-weight: bold;
 }
+
+/* Log window */
+
+.fate-dice-log-app .window-content {
+  padding: 0.5rem;
+}
+
+.fate-dice-log-balance {
+  margin: 0 0 0.5rem;
+}
+
+.fate-dice-log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fate-dice-log-table th,
+.fate-dice-log-table td {
+  padding: 0.2rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.fate-dice-log-table .delta,
+.fate-dice-log-table .after {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.fate-dice-log-table tr.refunded .delta {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.fate-dice-log-table .note,
+.fate-dice-log-table .refunded-tag {
+  opacity: 0.75;
+}
+
+.fate-dice-log-table .view-roll {
+  margin-left: 0.25rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.fate-dice-log-empty {
+  font-style: italic;
+  opacity: 0.75;
+}

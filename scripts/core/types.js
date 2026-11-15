@@ -13,6 +13,7 @@
  * @property {string} id
  * @property {(scope: string, key: string) => unknown} getFlag
  * @property {(scope: string, key: string, value: unknown) => Promise<unknown>} setFlag
+ * @property {(changes: Record<string, unknown>) => Promise<unknown>} update
  * @property {(user: UserLike, level: string) => boolean} testUserPermission
  */
 

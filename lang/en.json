@@ -52,6 +52,30 @@
       "FateReroll": "Fate Reroll",
       "Kept": "kept",
       "NotKept": "not kept"
+    },
+    "Log": {
+      "Open": "Fate Dice",
+      "Title": "Fate Dice: {name}",
+      "Balance": "Fate Dice",
+      "When": "When",
+      "What": "What",
+      "Change": "Change",
+      "After": "Balance",
+      "By": "By",
+      "ViewRoll": "view roll",
+      "Refunded": "refunded",
+      "RefundButton": "Refund",
+      "RefundTitle": "Refund Fate Dice",
+      "RefundConfirm": "Refund {amount} Fate Dice to {name}?",
+      "Empty": "No Fate Dice history yet.",
+      "Unknown": "Unknown",
+      "MessageGone": "That chat message has been deleted.",
+      "Award": "Awarded",
+      "Spend": "Spent",
+      "Reroll": "Fate Reroll",
+      "Set": "Set by GM",
+      "Refund": "Refund",
+      "AutoRefund": "Automatic refund (the reroll failed)"
     }
   }
 }

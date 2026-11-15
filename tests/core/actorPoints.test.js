@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getActorPoints, writeActorPoints } from "../../scripts/core/actorPoints.js";
+import { getActorPoints } from "../../scripts/core/actorPoints.js";
 import { MODULE_ID } from "../../scripts/core/constants.js";
 import { fakeActor } from "../helpers/fakes.js";
 
@@ -14,13 +14,5 @@ describe("getActorPoints", () => {
 
   it.each(["2", -1, 1.5, null])("treats a corrupt value (%s) as 0", (points) => {
     expect(getActorPoints(fakeActor("a", { flags: { [MODULE_ID]: { points } } }))).toBe(0);
-  });
-});
-
-describe("writeActorPoints", () => {
-  it("stores the value in the module's actor flag", async () => {
-    const actor = fakeActor("a");
-    await writeActorPoints(actor, 3);
-    expect(actor.getFlag(MODULE_ID, "points")).toBe(3);
   });
 });

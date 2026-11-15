@@ -1,30 +1,51 @@
 // @ts-check
 // The GM-side handlers for every point change. Only the active GM's client
 // runs these (see requestBus.js); they check permissions, apply the change
-// one actor at a time, and return a record of what happened for the log.
+// one actor at a time, and log it in the same update.
 
-import { getActorPoints, writeActorPoints } from "./actorPoints.js";
+import { getActorPoints } from "./actorPoints.js";
+import { MODULE_ID } from "./constants.js";
 import { FateError } from "./errors.js";
 import { createKeyedQueue } from "./keyedQueue.js";
+import { LOG_FLAG, createLogEntry, findRefundableSpend, getActorLog, markRefunded } from "./log.js";
 import { awardPoints, refundPoints, setPoints, spendPoints } from "./points.js";
 
 /** @typedef {import("./types.js").ActorLike} ActorLike */
 /** @typedef {import("./types.js").UserLike} UserLike */
 /** @typedef {import("./types.js").PointChange} PointChange */
+/** @typedef {import("./log.js").LogEntry} LogEntry */
 
 /**
- * @typedef {PointChange & { action: "award" | "spend" | "set" | "refund" | "rollback", actorId: string, userId: string }} ChangeRecord
+ * @typedef {PointChange & { action: LogEntry["action"], actorId: string, userId: string, entryId: string }} ChangeRecord
  */
 
 /** @typedef {{ userId: string }} RequestContext */
+
+/**
+ * @typedef {object} ChangeSpec
+ * @property {LogEntry["action"]} action
+ * @property {(current: number, log: LogEntry[]) => PointChange} compute
+ * @property {string} [reason]
+ * @property {LogEntry["source"]} [source]
+ * @property {(log: LogEntry[], entry: LogEntry) => { log: LogEntry[], entry: LogEntry }} [link]
+ *   Adjust the log and the new entry before saving (used to link refunds).
+ */
 
 /**
  * @param {object} deps
  * @param {(id: string) => UserLike | undefined} deps.getUser
  * @param {(id: string) => ActorLike | undefined} deps.getActor
  * @param {() => number} deps.getMaxPoints
+ * @param {() => string} [deps.newId]
+ * @param {() => number} [deps.now]
  */
-export function createFateService({ getUser, getActor, getMaxPoints }) {
+export function createFateService({
+  getUser,
+  getActor,
+  getMaxPoints,
+  newId = () => crypto.randomUUID(),
+  now = () => Date.now(),
+}) {
   const queue = createKeyedQueue();
 
   /** @param {string} userId */
@@ -55,26 +76,55 @@ export function createFateService({ getUser, getActor, getMaxPoints }) {
 
   /**
    * Apply a change to one actor inside its queue, so concurrent requests
-   * always see the latest value.
+   * always see the latest value, and save the points and log together.
    * @param {ActorLike} actor
-   * @param {ChangeRecord["action"]} action
    * @param {string} userId
-   * @param {(current: number) => PointChange} compute
+   * @param {ChangeSpec} spec
    * @returns {Promise<ChangeRecord>}
    */
-  const applyChange = (actor, action, userId, compute) =>
+  const applyChange = (actor, userId, { action, compute, reason, source, link }) =>
     queue.run(actor.id, async () => {
-      const result = compute(getActorPoints(actor));
-      if (result.delta !== 0) await writeActorPoints(actor, result.after);
-      return { action, actorId: actor.id, userId, ...result };
+      let log = getActorLog(actor);
+      const change = compute(getActorPoints(actor), log);
+      let entry = createLogEntry({
+        id: newId(),
+        time: now(),
+        action,
+        change,
+        userId,
+        reason,
+        source,
+      });
+      if (link) ({ log, entry } = link(log, entry));
+      await actor.update({
+        [`flags.${MODULE_ID}.points`]: change.after,
+        [`flags.${MODULE_ID}.${LOG_FLAG}`]: [...log, entry],
+      });
+      return { action, actorId: actor.id, userId, ...change, entryId: entry.id };
+    });
+
+  /**
+   * Link a refund entry to the spend it undoes.
+   * @param {string} spendId
+   * @param {boolean} [automatic]
+   */
+  const linkRefund =
+    (spendId, automatic = false) =>
+    (/** @type {LogEntry[]} */ log, /** @type {LogEntry} */ entry) => ({
+      log: markRefunded(log, spendId, entry.id),
+      entry: /** @type {LogEntry} */ ({
+        ...entry,
+        refundOf: spendId,
+        ...(automatic ? { automatic: true } : {}),
+      }),
     });
 
   return {
     /**
-     * @param {{ actorIds: string[], amount: number }} payload
+     * @param {{ actorIds: string[], amount: number, reason?: string }} payload
      * @param {RequestContext} context
      */
-    async award({ actorIds, amount }, { userId }) {
+    async award({ actorIds, amount, reason }, { userId }) {
       requireGM(requireUser(userId));
       if (!Array.isArray(actorIds) || actorIds.length === 0) {
         throw new FateError("invalid", "Choose at least one character");
@@ -84,57 +134,87 @@ export function createFateService({ getUser, getActor, getMaxPoints }) {
       awardPoints(0, amount, max); // validate before touching any actor
       return Promise.all(
         actors.map((actor) =>
-          applyChange(actor, "award", userId, (current) => awardPoints(current, amount, max)),
+          applyChange(actor, userId, {
+            action: "award",
+            reason,
+            compute: (current) => awardPoints(current, amount, max),
+          }),
         ),
       );
     },
 
     /**
-     * @param {{ actorId: string, cost: number }} payload
+     * @param {{ actorId: string, cost: number, reason?: string, source?: LogEntry["source"] }} payload
      * @param {RequestContext} context
      */
-    async spend({ actorId, cost }, { userId }) {
+    async spend({ actorId, cost, reason, source }, { userId }) {
       const user = requireUser(userId);
       const actor = requireActor(actorId);
       requireOwner(user, actor);
-      return applyChange(actor, "spend", userId, (current) => spendPoints(current, cost));
+      return applyChange(actor, userId, {
+        action: "spend",
+        reason,
+        source,
+        compute: (current) => spendPoints(current, cost),
+      });
     },
 
     /**
-     * @param {{ actorId: string, value: number }} payload
+     * @param {{ actorId: string, value: number, reason?: string }} payload
      * @param {RequestContext} context
      */
-    async setPoints({ actorId, value }, { userId }) {
+    async setPoints({ actorId, value, reason }, { userId }) {
       requireGM(requireUser(userId));
       const actor = requireActor(actorId);
       const max = getMaxPoints();
-      return applyChange(actor, "set", userId, (current) => setPoints(current, value, max));
+      return applyChange(actor, userId, {
+        action: "set",
+        reason,
+        compute: (current) => setPoints(current, value, max),
+      });
     },
 
     /**
-     * Give points back (GM only), capped at the maximum.
-     * @param {{ actorId: string, amount: number }} payload
+     * Give points back (GM only), capped at the maximum. With an entryId,
+     * refunds that logged spend and links the two entries.
+     * @param {{ actorId: string, amount?: number, entryId?: string, reason?: string }} payload
      * @param {RequestContext} context
      */
-    async refund({ actorId, amount }, { userId }) {
+    async refund({ actorId, amount, entryId, reason }, { userId }) {
       requireGM(requireUser(userId));
       const actor = requireActor(actorId);
       const max = getMaxPoints();
-      return applyChange(actor, "refund", userId, (current) => refundPoints(current, amount, max));
+      if (entryId === undefined) {
+        return applyChange(actor, userId, {
+          action: "refund",
+          reason,
+          compute: (current) => refundPoints(current, /** @type {number} */ (amount), max),
+        });
+      }
+      return applyChange(actor, userId, {
+        action: "refund",
+        reason,
+        compute: (current, log) =>
+          refundPoints(current, -findRefundableSpend(log, entryId).delta, max),
+        link: linkRefund(entryId),
+      });
     },
 
     /**
      * Undo a spend after a later step failed. Internal to the GM client: not
-     * exposed over the socket, so it skips permission checks.
+     * exposed over the socket, so it skips permission checks. Uncapped, so
+     * it restores exactly what was taken.
      * @param {ChangeRecord} spent
      */
     async rollback(spent) {
       const actor = requireActor(spent.actorId);
       const amount = -spent.delta;
       if (amount <= 0) return null;
-      return applyChange(actor, "rollback", spent.userId, (current) =>
-        refundPoints(current, amount),
-      );
+      return applyChange(actor, spent.userId, {
+        action: "refund",
+        compute: (current) => refundPoints(current, amount),
+        link: linkRefund(spent.entryId, true),
+      });
     },
   };
 }

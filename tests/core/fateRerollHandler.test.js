@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createFateRerollHandler } from "../../scripts/core/fateRerollHandler.js";
 import { createFateService } from "../../scripts/core/fateService.js";
 import { getActorPoints } from "../../scripts/core/actorPoints.js";
+import { getActorLog } from "../../scripts/core/log.js";
 import { MODULE_ID } from "../../scripts/core/constants.js";
 import { dnd5eAdapter } from "../../scripts/systems/dnd5e.js";
 import { editFirstRoll, loadMessage } from "../helpers/fixtures.js";
@@ -98,6 +99,18 @@ describe("fateReroll: the happy path", () => {
     expect(ctx.deps.markFated).toHaveBeenCalledWith("m1", "fated-1");
   });
 
+  it("logs the spend as a Fate Reroll linked to the roll", async () => {
+    await fateAs("alice");
+    expect(getActorLog(ctx.actor)).toEqual([
+      expect.objectContaining({
+        action: "spend",
+        delta: -1,
+        userId: "alice",
+        source: { type: "reroll", messageId: "m1" },
+      }),
+    ]);
+  });
+
   it("charges the configured cost", async () => {
     ctx = setup({ points: 3, settings: { ...SETTINGS, rerollCost: 2 } });
     ctx.addMessage("m1", loadMessage("dnd5e", "attack-disadvantage"));
@@ -191,6 +204,10 @@ describe("fateReroll: failures after spending", () => {
     ctx.deps.createFatedMessage.mockRejectedValueOnce(new Error("database down"));
     await expect(fateAs("alice")).rejects.toThrow("database down");
     expect(getActorPoints(ctx.actor)).toBe(2);
+    expect(getActorLog(ctx.actor).map((e) => [e.action, e.automatic ?? false])).toEqual([
+      ["spend", false],
+      ["refund", true],
+    ]);
     expect(ctx.deps.markFated).not.toHaveBeenCalled();
   });
 
