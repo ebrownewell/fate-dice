@@ -1,0 +1,81 @@
+import { describe, expect, it, vi } from "vitest";
+import {
+  SETTING_DEFINITIONS,
+  getFateRules,
+  readSettings,
+  registerSettings,
+} from "../../scripts/core/settings.js";
+import { DEFAULT_FATE_RULES } from "../../scripts/rules/fateReroll.js";
+
+const DEFAULTS = {
+  maxPoints: 3,
+  rerollEnabled: true,
+  rerollCost: 1,
+  bonusEnabled: true,
+  bonusThreshold: 9,
+  bonusAmount: 10,
+  rerollOnInitiative: true,
+  rerollOnDeathSaves: true,
+};
+
+describe("SETTING_DEFINITIONS", () => {
+  it("defines every setting with the agreed defaults", () => {
+    const defaults = Object.fromEntries(
+      Object.entries(SETTING_DEFINITIONS).map(([key, def]) => [key, def.default]),
+    );
+    expect(defaults).toEqual(DEFAULTS);
+  });
+
+  it("makes every setting a world setting the GM can see in the settings menu", () => {
+    for (const def of Object.values(SETTING_DEFINITIONS)) {
+      expect(def.scope).toBe("world");
+      expect(def.config).toBe(true);
+    }
+  });
+
+  it("limits the bonus threshold to 1–19", () => {
+    expect(SETTING_DEFINITIONS.bonusThreshold.range).toEqual({ min: 1, max: 19, step: 1 });
+  });
+});
+
+describe("registerSettings", () => {
+  it("registers each definition under the module id", () => {
+    const api = { register: vi.fn(), get: vi.fn() };
+    registerSettings(api, "fate-dice");
+    expect(api.register).toHaveBeenCalledTimes(Object.keys(SETTING_DEFINITIONS).length);
+    expect(api.register).toHaveBeenCalledWith(
+      "fate-dice",
+      "maxPoints",
+      SETTING_DEFINITIONS.maxPoints,
+    );
+  });
+});
+
+describe("readSettings", () => {
+  it("reads every setting into a plain object", () => {
+    const api = { register: vi.fn(), get: vi.fn((_ns, key) => `value of ${key}`) };
+    const values = readSettings(api, "fate-dice");
+    expect(Object.keys(values)).toEqual(Object.keys(SETTING_DEFINITIONS));
+    expect(values.maxPoints).toBe("value of maxPoints");
+    expect(api.get).toHaveBeenCalledWith("fate-dice", "maxPoints");
+  });
+});
+
+describe("getFateRules", () => {
+  it("maps the bonus settings to fate rules", () => {
+    expect(getFateRules({ bonusEnabled: false, bonusThreshold: 5, bonusAmount: 5 })).toEqual({
+      bonusEnabled: false,
+      threshold: 5,
+      bonus: 5,
+    });
+  });
+
+  it("falls back to the default for any invalid value instead of breaking rerolls", () => {
+    expect(getFateRules({ bonusEnabled: true, bonusThreshold: 25, bonusAmount: 15 })).toEqual({
+      bonusEnabled: true,
+      threshold: DEFAULT_FATE_RULES.threshold,
+      bonus: 15,
+    });
+    expect(getFateRules({})).toEqual(DEFAULT_FATE_RULES);
+  });
+});

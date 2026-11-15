@@ -1,5 +1,49 @@
 {
   "FATEDICE": {
-    "Title": "Fate Dice"
+    "Title": "Fate Dice",
+    "Settings": {
+      "MaxPoints": {
+        "Name": "Maximum Fate Dice",
+        "Hint": "The most Fate Dice a character can hold at once."
+      },
+      "RerollEnabled": {
+        "Name": "Enable Fate Reroll",
+        "Hint": "Let players spend Fate Dice to roll an extra d20 after any d20 roll and keep the highest."
+      },
+      "RerollCost": {
+        "Name": "Fate Reroll cost",
+        "Hint": "How many Fate Dice a Fate Reroll costs."
+      },
+      "BonusEnabled": {
+        "Name": "Enable fate die bonus",
+        "Hint": "Add a bonus to a low fate die as soon as it is rolled."
+      },
+      "BonusThreshold": {
+        "Name": "Fate die bonus applies on",
+        "Hint": "A fate die showing this number or lower gets the bonus."
+      },
+      "BonusAmount": {
+        "Name": "Fate die bonus",
+        "Hint": "How much is added to a low fate die."
+      },
+      "RerollOnInitiative": {
+        "Name": "Allow Fate Reroll on initiative",
+        "Hint": "Let players use a Fate Reroll on initiative rolls."
+      },
+      "RerollOnDeathSaves": {
+        "Name": "Allow Fate Reroll on death saves",
+        "Hint": "Let players use a Fate Reroll on death saving throws."
+      }
+    },
+    "Errors": {
+      "invalid": "That isn't a valid amount.",
+      "insufficient-points": "Not enough Fate Dice.",
+      "not-permitted": "You don't have permission to do that.",
+      "not-found": "That character couldn't be found.",
+      "no-gm": "A GM must be connected to spend or award Fate Dice.",
+      "timeout": "The GM didn't respond in time. Try again.",
+      "unknown-action": "Fate Dice doesn't know how to do that.",
+      "internal": "Something went wrong. The GM's console has details."
+    }
   }
 }

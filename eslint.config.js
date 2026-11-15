@@ -16,6 +16,7 @@ export default [
         ui: "readonly",
         CONFIG: "readonly",
         foundry: "readonly",
+        Actor: "readonly",
       },
     },
   },

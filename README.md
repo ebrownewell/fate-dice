@@ -37,3 +37,17 @@ ln -s "$PWD" "<FoundryData>/Data/modules/fate-dice"
 | `scripts/systems`                 | Per-system adapters (dnd5e, pf2e, pf1, generic) | Shared adapter test suite against recorded chat-message fixtures |
 | `scripts/apps`, `scripts/main.js` | Thin Foundry UI and hook wiring                 | Quench integration tests + `TESTING.md` checklist                |
 
+
+## Macro API
+
+```js
+const fate = game.modules.get("fate-dice").api;
+fate.getPoints(actor); // read, no GM needed
+await fate.award(actor, 1); // GM only; also accepts an array of actors or ids
+await fate.spend(actor, 1); // owner or GM
+await fate.setPoints(actor, 3); // GM only
+```
+
+Changes are applied by the active GM's client, so a GM must be connected. Failed calls reject
+with a `FateError` whose `code` is one of `invalid`, `insufficient-points`, `not-permitted`,
+`not-found`, `no-gm`, `timeout`, `unknown-action` or `internal`.

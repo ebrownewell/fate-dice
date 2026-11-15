@@ -1,10 +1,21 @@
-# Manual test checklist
+# Testing
+
+## Automated
+
+- `npm test`: unit tests for everything that can run outside Foundry.
+- **In Foundry:** install and enable the [Quench](https://github.com/Ethaks/FVTT-Quench) module,
+  then open Quench's test window as a GM and run the **Fate Dice** batches. They create and delete
+  a temporary actor named "Fate Dice integration test".
+
+## Manual checklist
 
 Run through this before each release. It covers what automated tests can't reach (visuals and feel).
-Everything that _can_ be tested automatically belongs in `tests/` instead.
 
-## Setup
+### Setup
 
 - [ ] Module enables in a v13 world with no console errors.
+- [ ] All Fate Dice settings appear under Configure Settings → Fate Dice, with readable names and hints.
+- [ ] A player client (separate browser) can call `game.modules.get("fate-dice").api.spend(...)` on
+      their own character while the GM is connected, and gets a `no-gm` error when no GM is.
 
 <!-- Add sections as features land: chat cards, HUD, shop, logs, nominations. -->

@@ -6,9 +6,11 @@
 declare const Hooks: {
   once(hook: string, fn: (...args: any[]) => void): number;
   on(hook: string, fn: (...args: any[]) => void): number;
+  callAll(hook: string, ...args: unknown[]): boolean;
 };
 
 declare const game: any;
 declare const ui: any;
 declare const CONFIG: any;
 declare const foundry: any;
+declare const Actor: any;

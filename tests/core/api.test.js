@@ -1,0 +1,43 @@
+import { describe, expect, it, vi } from "vitest";
+import { createApi } from "../../scripts/core/api.js";
+import { MODULE_ID } from "../../scripts/core/constants.js";
+import { fakeActor } from "../helpers/fakes.js";
+
+const setup = () => {
+  const bus = { request: vi.fn(async () => "result") };
+  return { bus, api: createApi({ bus }) };
+};
+
+describe("createApi", () => {
+  it("reads an actor's points directly, without a GM round trip", () => {
+    const { bus, api } = setup();
+    expect(api.getPoints(fakeActor("a", { flags: { [MODULE_ID]: { points: 2 } } }))).toBe(2);
+    expect(bus.request).not.toHaveBeenCalled();
+  });
+
+  it("awards to one actor, given as a document or an id", async () => {
+    const { bus, api } = setup();
+    await api.award(fakeActor("a"), 1);
+    await api.award("b", 2);
+    expect(bus.request).toHaveBeenNthCalledWith(1, "award", { actorIds: ["a"], amount: 1 });
+    expect(bus.request).toHaveBeenNthCalledWith(2, "award", { actorIds: ["b"], amount: 2 });
+  });
+
+  it("awards to several actors at once, defaulting to 1 point", async () => {
+    const { bus, api } = setup();
+    await api.award([fakeActor("a"), "b"]);
+    expect(bus.request).toHaveBeenCalledWith("award", { actorIds: ["a", "b"], amount: 1 });
+  });
+
+  it("spends, defaulting to 1 point", async () => {
+    const { bus, api } = setup();
+    await expect(api.spend(fakeActor("a"))).resolves.toBe("result");
+    expect(bus.request).toHaveBeenCalledWith("spend", { actorId: "a", cost: 1 });
+  });
+
+  it("sets a value", async () => {
+    const { bus, api } = setup();
+    await api.setPoints("a", 3);
+    expect(bus.request).toHaveBeenCalledWith("setPoints", { actorId: "a", value: 3 });
+  });
+});
