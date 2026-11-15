@@ -20,6 +20,8 @@ export default [
         User: "readonly",
         CONST: "readonly",
         quench: "readonly",
+        Combat: "readonly",
+        ChatMessage: "readonly",
       },
     },
   },

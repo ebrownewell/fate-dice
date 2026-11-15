@@ -1,0 +1,46 @@
+{
+  "sound": "sounds/dice.wav",
+  "flags": {
+    "dnd5e": {
+      "messageType": "roll",
+      "roll": {
+        "toolId": "thief",
+        "type": "tool"
+      }
+    },
+    "core": {
+      "canPopout": true
+    }
+  },
+  "flavor": "Thieves' Tools Check",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "jcvIA9zVx1pJ0piy",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"maximum\":null,\"minimum\":null,\"advantageMode\":0,\"criticalSuccess\":20,\"criticalFailure\":1,\"reliableTalent\":false,\"configured\":true,\"rollType\":\"tool\"},\"dice\":[],\"formula\":\"1d20 + 0\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":0,\"criticalSuccess\":20,\"criticalFailure\":1},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":19,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":19,\"evaluated\":true}"
+  ],
+  "_id": "mMRsxhYQgyUjhde3",
+  "type": "base",
+  "system": {},
+  "style": 0,
+  "author": "8hdCZRmrmK7QSNwK",
+  "timestamp": 1794773202939,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3",
+    "createdTime": 1794773202940,
+    "modifiedTime": 1794773202940,
+    "lastModifiedBy": "8hdCZRmrmK7QSNwK"
+  }
+}

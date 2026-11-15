@@ -18,3 +18,5 @@ declare const User: any;
 declare const CONST: any;
 /** Global from the Quench test module, present only when it is enabled. */
 declare const quench: any;
+declare const Combat: any;
+declare const ChatMessage: any;

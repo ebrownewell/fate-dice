@@ -1,0 +1,56 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Longsword - Damage Roll",
+  "flags": {
+    "dnd5e": {
+      "activity": {
+        "type": "attack",
+        "id": "dnd5eactivity000",
+        "uuid": "Actor.jcvIA9zVx1pJ0piy.Item.HhNnZmMvCKUQ4hVb.Activity.dnd5eactivity000"
+      },
+      "item": {
+        "type": "weapon",
+        "id": "HhNnZmMvCKUQ4hVb",
+        "uuid": "Actor.jcvIA9zVx1pJ0piy.Item.HhNnZmMvCKUQ4hVb"
+      },
+      "targets": [],
+      "messageType": "roll",
+      "roll": {
+        "type": "damage"
+      }
+    },
+    "core": {
+      "canPopout": true
+    }
+  },
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "jcvIA9zVx1pJ0piy",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "rolls": [
+    "{\"class\":\"DamageRoll\",\"options\":{\"type\":\"slashing\",\"types\":[\"slashing\"],\"properties\":[],\"isCritical\":false,\"critical\":{\"multiplyNumeric\":false,\"powerfulCritical\":false},\"preprocessed\":true,\"configured\":true,\"rollType\":\"damage\"},\"dice\":[],\"formula\":\"1d8 + 0\",\"terms\":[{\"class\":\"BasicDie\",\"options\":{\"flavor\":null,\"baseNumber\":1},\"evaluated\":true,\"number\":1,\"faces\":8,\"modifiers\":[],\"results\":[{\"result\":1,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":1,\"evaluated\":true}"
+  ],
+  "_id": "3UEHngeY5ajHREXF",
+  "type": "base",
+  "system": {},
+  "style": 0,
+  "author": "8hdCZRmrmK7QSNwK",
+  "timestamp": 1794773202215,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3",
+    "createdTime": 1794773202215,
+    "modifiedTime": 1794773202215,
+    "lastModifiedBy": "8hdCZRmrmK7QSNwK"
+  }
+}

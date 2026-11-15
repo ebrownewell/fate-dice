@@ -32,6 +32,7 @@ None of this ships with the module, and CI can't run it (it needs a license).
 ```sh
 ~/foundry/start.sh --world=fate-dice-dev   # start the server
 npm run test:foundry                      # Quench batches + multi-client browser tests
+node tools/foundry/record-fixtures.js     # re-record dnd5e chat-message fixtures (after a dnd5e update)
 ```
 
 Set `FOUNDRY_URL` to point the tools at a different server.
