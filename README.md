@@ -2,6 +2,17 @@
 
 A Foundry VTT (v13) module for a hero-point style **Fate Dice** system.
 
+## Installation
+
+In Foundry (v13): **Add-on Modules → Install Module**, paste this manifest URL, and click Install:
+
+```
+https://github.com/ebrownewell/fate-dice/releases/latest/download/module.json
+```
+
+Then enable **Fate Dice** in your world (Game Settings → Manage Modules). A GM must be logged in for
+Fate Dice to be spent or awarded.
+
 ## Supported systems
 
 The Fate Dice pool, log, HUD, GM panel, shop and nominations work in any system. The
@@ -22,6 +33,19 @@ The Fate Dice pool, log, HUD, GM panel, shop and nominations work in any system.
     disadvantage: **only the lower** die) and keep the highest.
   - Only a natural die can crit or fumble; a boosted fate die never does.
 - The GM defines other purchases in a shop, which can be shared as JSON.
+
+## Releasing
+
+1. Update `version` in `module.json` and `package.json`, and add a `## [x.y.z]` section to `CHANGELOG.md`.
+2. Commit, then tag and push: `git tag vx.y.z && git push origin main vx.y.z`.
+3. GitHub Actions runs every check, builds `module.zip`, and publishes the release. Foundry picks it
+   up from the manifest URL above.
+
+`npm run build -- vx.y.z` builds the same package locally into `dist/`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
 
 ## Development
 

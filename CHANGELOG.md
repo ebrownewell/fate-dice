@@ -4,6 +4,10 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-15
+
+First release.
+
 ### Added
 
 - **Matching a Fate Reroll to its original roll**, for busy tables where several players make the same roll:

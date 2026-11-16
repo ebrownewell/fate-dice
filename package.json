@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test",
     "test:foundry": "node tools/foundry/run-quench.js && vitest run --config vitest.foundry.config.js",
-    "foundry:setup": "node tools/foundry/setup-world.js"
+    "foundry:setup": "node tools/foundry/setup-world.js",
+    "build": "node tools/release/build.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -25,5 +26,6 @@
     "prettier": "^3.10.1",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
-  }
+  },
+  "license": "MIT"
 }
