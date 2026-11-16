@@ -55,3 +55,18 @@ node tools/foundry/record-fixtures.js     # re-record dnd5e chat-message fixture
 ```
 
 Set `FOUNDRY_URL` to point the tools at a different server.
+
+## Foundry v14
+
+The v14 line (`main`) has its own server so the two never share worlds:
+
+- Foundry 14.370 in `~/foundry/v14`, data in `~/foundry/dev-data-v14`, started with
+  `~/foundry/start-v14.sh --world=fate-dice-dnd5e` (or `fate-dice-pf2e`) on port 30002.
+- It needs Node 24 (`nvm install 24`).
+- Systems: dnd5e 6.1.0 and pf2e 8.7.0. pf1e doesn't support v14 yet.
+- New worlds are made on the `/create` page in v14, not the old setup form.
+- Point the tools at it with `FOUNDRY_URL=http://localhost:30002`, e.g.
+  `FOUNDRY_URL=http://localhost:30002 npm run test:foundry`.
+
+The v13 server loads the `foundry-v13` branch from a separate checkout (`../fate-dice-v13`, a git
+worktree), so both lines can be tested at once.
