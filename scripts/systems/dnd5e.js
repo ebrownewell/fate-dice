@@ -25,6 +25,29 @@ import { appendFateDie, isD20Term, parseRoll, readD20 } from "./common.js";
 const MODES = { 1: "advantage", 0: "normal", "-1": "disadvantage" };
 
 /**
+ * What kind of roll a message holds. dnd5e 6 (Foundry v14) uses the message
+ * type and its system data; dnd5e 5 used flags.dnd5e.roll.type.
+ * @param {any} message
+ * @param {any} roll
+ */
+function kindOf(message, roll) {
+  if (message.flags?.core?.initiativeRoll) return "initiative";
+  const system = message.system ?? {};
+  switch (message.type) {
+    case "attack":
+      return "attack";
+    case "save":
+      return system.type === "death" ? "death" : "save";
+    case "check":
+      if (system.type === "initiative") return "initiative";
+      if (system.skill) return "skill";
+      if (system.tool) return "tool";
+      return "ability";
+  }
+  return message.flags?.dnd5e?.roll?.type ?? roll.options?.rollType ?? "other";
+}
+
+/**
  * @param {any} message Chat message data.
  * @returns {RollInfo | null} null if this isn't a d20 roll that can be fated.
  */
@@ -41,9 +64,7 @@ function getRollInfo(message) {
   const d20 = mode ? readD20(die, mode) : null;
   if (!mode || !d20) return null;
 
-  const kind = message.flags?.core?.initiativeRoll
-    ? "initiative"
-    : (message.flags?.dnd5e?.roll?.type ?? roll.options?.rollType ?? "other");
+  const kind = kindOf(message, roll);
 
   return {
     kind,

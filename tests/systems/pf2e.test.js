@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { pf2eAdapter } from "../../scripts/systems/pf2e.js";
 import { DEFAULT_FATE_RULES, resolveFateReroll } from "../../scripts/rules/fateReroll.js";
 import { firstRoll, loadMessage } from "../helpers/fixtures.js";
+import { rewriteDegreeHtml } from "../../scripts/rules/pf2eDegree.js";
 
 const load = (/** @type {string} */ name) => loadMessage("pf2e", name);
 const info = (/** @type {string} */ name) => pf2eAdapter.getRollInfo(load(name));
@@ -105,5 +106,33 @@ describe("pf2e adjustFatedMessage", () => {
     });
     expect(data.flags.pf2e.context.outcome).toBe(message.flags.pf2e.context.outcome);
     expect(data.flavor).toBe(message.flavor);
+  });
+});
+
+describe("pf2e 8 (Foundry v14) messages", () => {
+  const info8 = (/** @type {string} */ name) => pf2eAdapter.getRollInfo(loadMessage("pf2e8", name));
+
+  it.each([
+    ["skill-dc", "skill", "normal"],
+    ["skill-fortune", "skill", "advantage"],
+    ["skill-misfortune", "skill", "disadvantage"],
+    ["save", "save", "normal"],
+    ["perception", "perception", "normal"],
+    ["strike", "attack", "normal"],
+    ["initiative", "initiative", "normal"],
+  ])("reads %s as a %s roll (%s)", (name, kind, mode) => {
+    expect(info8(name)).toMatchObject({ kind, mode });
+  });
+
+  it("reads the DC and ignores damage", () => {
+    expect(info8("skill-dc")?.dc).toBe(15);
+    expect(info8("damage")).toBeNull();
+  });
+
+  it("finds the result line on a pf2e 8 card", () => {
+    const flavor = loadMessage("pf2e8", "skill-dc").flavor;
+    expect(rewriteDegreeHtml(flavor, { degree: 2, label: "Success", margin: 2 })).toContain(
+      '<span class="success">Success</span>',
+    );
   });
 });

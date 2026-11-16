@@ -101,19 +101,30 @@ describe.skipIf(skip)("the log window", () => {
   });
 
   it("is reachable from a Fate Dice button in the character sheet header", async () => {
-    const opened = await player.page.evaluate(async (name) => {
+    const page = player.page;
+    const { sheetId, shopId } = await page.evaluate(async (name) => {
       const actor = game.actors.getName(name);
+      // Start with no shop open, so we know the button opened it.
+      for (const app of foundry.applications.instances.values()) {
+        if (app.id === `fate-dice-shop-${actor.id}`) await app.close();
+      }
       await actor.sheet.render({ force: true });
       await new Promise((r) => setTimeout(r, 500));
-      const control = actor.sheet.element.querySelector('[data-action="fateDiceLog"] button');
-      control?.click();
-      await new Promise((r) => setTimeout(r, 500));
-      const found =
-        Boolean(control) && Boolean(document.getElementById(`fate-dice-log-${actor.id}`));
-      await actor.sheet.close();
-      return found;
+      return { sheetId: actor.sheet.id, shopId: `fate-dice-shop-${actor.id}` };
     }, HERO);
-    expect(opened).toBe(true);
+
+    // Foundry v13 sheets show header buttons directly; v14 puts them in a menu.
+    const direct = page.locator(`#${sheetId} [data-action="fateDiceLog"] button`);
+    if (await direct.count()) {
+      await direct.click();
+    } else {
+      await page.locator(`#${sheetId} [data-action="toggleControls"]`).click();
+      await page.locator("li.context-item", { hasText: "Fate Dice" }).click();
+    }
+    await expect
+      .poll(() => page.evaluate((id) => Boolean(document.getElementById(id)), shopId))
+      .toBe(true);
+    await page.evaluate((name) => game.actors.getName(name).sheet.close(), HERO);
   });
 });
 

@@ -1,0 +1,49 @@
+{
+  "author": "bO75wi9E2JEehvMI",
+  "content": "8",
+  "sound": "sounds/dice.wav",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "flavor": "Player A Hero rolls for Initiative!",
+  "flags": {
+    "core": {
+      "initiativeRoll": true,
+      "canPopout": true
+    }
+  },
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"advantage\":false,\"disadvantage\":false,\"maximum\":null,\"minimum\":null,\"ability\":\"dex\",\"flavor\":\"Initiative\",\"halflingLucky\":false,\"advantageMode\":0,\"configured\":true},\"dice\":[],\"formula\":\"1d20 + 0\",\"terms\":[{\"class\":\"D20Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":0},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":8,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":8,\"evaluated\":true}"
+  ],
+  "_id": "2wqcCnMHa8CMHatx",
+  "type": "check",
+  "system": {
+    "ability": "dex",
+    "type": "initiative",
+    "activity": null,
+    "item": null,
+    "origin": null,
+    "targets": [],
+    "skill": null,
+    "tool": null
+  },
+  "style": 0,
+  "timestamp": 1794796592218,
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796592218,
+    "modifiedTime": 1794796592218,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Longsword - Damage Roll",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "system": {
+    "activity": {
+      "id": "dnd5eactivity000",
+      "img": "systems/dnd5e/icons/svg/activity/attack.svg",
+      "name": "Attack",
+      "type": "attack",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ.Activity.dnd5eactivity000"
+    },
+    "item": {
+      "compendiumSource": null,
+      "id": "LnriM3Hjxq9iobeQ",
+      "img": "icons/weapons/swords/greatsword-guard.webp",
+      "name": "Longsword",
+      "type": "weapon",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ"
+    },
+    "targets": [],
+    "applicationOptions": {},
+    "origin": null,
+    "onSave": null
+  },
+  "type": "damage",
+  "rolls": [
+    "{\"class\":\"DamageRoll\",\"options\":{\"type\":\"slashing\",\"types\":[\"slashing\"],\"properties\":[],\"isCritical\":false,\"critical\":{\"multiplyNumeric\":false,\"powerfulCritical\":false},\"preprocessed\":true,\"configured\":true,\"rollType\":\"damage\"},\"dice\":[],\"formula\":\"1d8 + 0\",\"terms\":[{\"class\":\"BasicDie\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":1,\"faces\":8,\"modifiers\":[],\"results\":[{\"result\":2,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":2,\"evaluated\":true}"
+  ],
+  "_id": "oxuCj4lNWkSVrCHi",
+  "style": 0,
+  "author": "bO75wi9E2JEehvMI",
+  "timestamp": 1794796590114,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {
+    "core": {
+      "canPopout": true
+    }
+  },
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796590114,
+    "modifiedTime": 1794796590115,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

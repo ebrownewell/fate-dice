@@ -45,7 +45,11 @@ describe("addFateControls", () => {
     const button = /** @type {HTMLButtonElement} */ (root.querySelector("button.fate-dice-reroll"));
     expect(button.textContent?.trim()).toBe("Fate Reroll (1)");
     expect(button.disabled).toBe(false);
-    expect(button.closest(".message-content")).not.toBeNull();
+    // Next to the message content, not inside it: dnd5e 6 re-renders the content after
+    // Foundry's render hook, which would wipe anything added inside.
+    const controls = root.querySelector(".fate-dice-controls");
+    expect(controls?.parentElement).toBe(root);
+    expect(controls?.previousElementSibling?.classList.contains("message-content")).toBe(true);
   });
 
   it("adds a disabled button explaining why", () => {
@@ -122,11 +126,27 @@ describe("addFateBanner", () => {
     isFumble: false,
   };
 
-  it("puts a banner at the top of the message content", () => {
+  it("puts a banner just above the message content, outside it", () => {
     addFateBanner(root, outcome, LABELS);
-    const banner = root.querySelector(".message-content > .fate-dice-banner");
-    expect(banner).not.toBeNull();
-    expect(root.querySelector(".message-content")?.firstElementChild).toBe(banner);
+    const banner = root.querySelector(".fate-dice-banner");
+    expect(banner?.parentElement).toBe(root);
+    expect(banner?.nextElementSibling?.classList.contains("message-content")).toBe(true);
+  });
+
+  it("survives the message content being re-rendered", () => {
+    addFateBanner(root, outcome, LABELS);
+    addFateControls(root, { visible: true, enabled: true }, { cost: 1, labels: LABELS });
+    const content = /** @type {HTMLElement} */ (root.querySelector(".message-content"));
+    content.innerHTML = "<div>re-rendered by the system</div>";
+    expect(root.querySelector(".fate-dice-banner")).not.toBeNull();
+    expect(root.querySelector(".fate-dice-controls")).not.toBeNull();
+  });
+
+  it("goes inside a card that has no message content (e.g. one attack row)", () => {
+    const row = document.createElement("div");
+    row.className = "chat-attack";
+    addFateControls(row, { visible: true, enabled: true }, { cost: 1, labels: LABELS });
+    expect(row.querySelector(".fate-dice-controls")?.parentElement).toBe(row);
   });
 
   it("says what the fate die rolled and whether it was kept", () => {

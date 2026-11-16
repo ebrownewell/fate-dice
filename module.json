@@ -2,23 +2,23 @@
   "id": "fate-dice",
   "title": "Fate Dice",
   "description": "A hero-point style Fate Dice system: a built-in Fate Reroll, a GM-defined shop, nominations, and per-character logs.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "authors": [
     {
       "name": "Eric Brownewell"
     }
   ],
   "url": "https://github.com/ebrownewell/fate-dice",
-  "manifest": "https://github.com/ebrownewell/fate-dice/releases/download/foundry-v13/module.json",
-  "download": "https://github.com/ebrownewell/fate-dice/releases/download/v1.0.0/module.zip",
+  "manifest": "https://github.com/ebrownewell/fate-dice/releases/download/foundry-v14/module.json",
+  "download": "https://github.com/ebrownewell/fate-dice/releases/download/v2.0.0/module.zip",
   "license": "LICENSE",
   "readme": "README.md",
   "changelog": "CHANGELOG.md",
   "bugs": "https://github.com/ebrownewell/fate-dice/issues",
   "compatibility": {
-    "minimum": "13",
-    "verified": "13",
-    "maximum": "13"
+    "minimum": "14.370",
+    "verified": "14.370",
+    "maximum": "14"
   },
   "esmodules": ["scripts/main.js"],
   "styles": ["styles/fate-dice.css"],

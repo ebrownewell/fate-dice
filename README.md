@@ -1,6 +1,6 @@
 # Fate Dice
 
-Fate Dice for Foundry VTT v13. It's the hero point system we use at our table: players earn Fate
+Fate Dice for Foundry VTT. It's the hero point system we use at our table: players earn Fate
 Dice and spend them to reroll a d20, or on anything else the GM puts in the shop.
 
 ## Install
@@ -9,8 +9,11 @@ In Foundry go to Add-on Modules > Install Module, paste the manifest URL for you
 and install:
 
 ```
-https://github.com/ebrownewell/fate-dice/releases/download/foundry-v13/module.json
+Foundry v14: https://github.com/ebrownewell/fate-dice/releases/download/foundry-v14/module.json
+Foundry v13: https://github.com/ebrownewell/fate-dice/releases/download/foundry-v13/module.json
 ```
+
+Each Foundry version gets its own updates, so use the link that matches yours.
 
 Then turn it on in your world. A GM has to be logged in for Fate Dice to be spent or awarded.
 
@@ -30,13 +33,13 @@ The max, the cost, the +10 and the 9-or-lower are all settings.
 
 ## Systems
 
-The Fate Reroll button works in:
+The Fate Reroll button works in (Foundry v14 / v13 versions of each system):
 
-- **dnd5e 5.3:** attacks, checks, saves, skills, tools, initiative and death saves.
-- **pf2e 7.12:** checks, saves, perception, strikes and initiative. Fortune and misfortune count as
+- **dnd5e 6.1 / 5.3:** attacks, checks, saves, skills, tools, initiative and death saves.
+- **pf2e 8.7 / 7.12:** checks, saves, perception, strikes and initiative. Fortune and misfortune count as
   advantage and disadvantage, and the degree of success gets updated. pf2e's own hero point reroll
   is hidden (there's a setting to bring it back).
-- **pf1e 11.11:** skills, saves, ability checks, initiative and attacks. Each attack in a full
+- **pf1e 11.11 (Foundry v13 only for now):** skills, saves, ability checks, initiative and attacks. Each attack in a full
   attack can be fated separately. If a fated attack turns into a crit threat it rolls the
   confirmation for you, but you still roll crit damage yourself.
 

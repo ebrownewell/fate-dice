@@ -1,0 +1,48 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Dexterity (Stealth) Check (Disadvantage)",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "system": {
+    "ability": "dex",
+    "skill": "ste",
+    "tool": null,
+    "activity": null,
+    "item": null,
+    "origin": null,
+    "targets": [],
+    "type": "ability"
+  },
+  "type": "check",
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"maximum\":null,\"minimum\":null,\"advantageMode\":-1,\"criticalSuccess\":20,\"criticalFailure\":1,\"reliableTalent\":false,\"configured\":true,\"rollType\":\"check\"},\"dice\":[],\"formula\":\"1d20dis + 0\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":-1,\"criticalSuccess\":20,\"criticalFailure\":1,\"pending\":{}},\"evaluated\":true,\"number\":2,\"faces\":20,\"modifiers\":[\"dis\"],\"results\":[{\"result\":7,\"active\":false,\"discarded\":true},{\"result\":6,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":6,\"evaluated\":true}"
+  ],
+  "_id": "EaEK7eXrjyfLqzbS",
+  "style": 0,
+  "author": "bO75wi9E2JEehvMI",
+  "timestamp": 1794796590640,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {
+    "core": {
+      "canPopout": true
+    }
+  },
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796590640,
+    "modifiedTime": 1794796590640,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

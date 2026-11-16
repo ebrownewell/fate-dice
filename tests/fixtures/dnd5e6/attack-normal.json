@@ -1,0 +1,62 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Longsword - Attack Roll",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "system": {
+    "activity": {
+      "id": "dnd5eactivity000",
+      "img": "systems/dnd5e/icons/svg/activity/attack.svg",
+      "name": "Attack",
+      "type": "attack",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ.Activity.dnd5eactivity000"
+    },
+    "item": {
+      "compendiumSource": null,
+      "id": "LnriM3Hjxq9iobeQ",
+      "img": "icons/weapons/swords/greatsword-guard.webp",
+      "name": "Longsword",
+      "type": "weapon",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ"
+    },
+    "targets": [],
+    "ability": "str",
+    "mode": "oneHanded",
+    "origin": null,
+    "ammunition": null,
+    "deltas": null,
+    "mastery": null
+  },
+  "type": "attack",
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"maximum\":null,\"minimum\":null,\"advantage\":false,\"disadvantage\":false,\"attackMode\":\"oneHanded\",\"criticalSuccess\":20,\"advantageMode\":0,\"ability\":\"str\",\"criticalFailure\":1,\"configured\":true,\"rollType\":\"attack\"},\"dice\":[],\"formula\":\"1d20 + 0 + 0\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":0,\"criticalSuccess\":20,\"criticalFailure\":1},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":11,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":11,\"evaluated\":true}"
+  ],
+  "_id": "17MbyqtxXwYcHwsl",
+  "style": 0,
+  "author": "bO75wi9E2JEehvMI",
+  "timestamp": 1794796584039,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {
+    "core": {
+      "canPopout": true
+    }
+  },
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796584040,
+    "modifiedTime": 1794796584040,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

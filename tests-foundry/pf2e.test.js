@@ -97,11 +97,18 @@ describe.skipIf(skip)("pf2e Fate Reroll", () => {
       player.page.evaluate(() => {
         const options = ui.chat._getEntryContextOptions();
         Hooks.call("getChatMessageContextOptions", ui.chat, options);
-        return options.map((/** @type {any} */ o) => o.name);
+        return options.map((/** @type {any} */ o) => o.name ?? o.label);
       });
-    expect(await menu()).not.toContain("PF2E.RerollMenu.HeroPoint");
-    await gm.page.evaluate(() => game.settings.set("fate-dice", "hidePf2eHeroPointReroll", false));
-    await expect.poll(menu).toContain("PF2E.RerollMenu.HeroPoint");
-    await gm.page.evaluate(() => game.settings.set("fate-dice", "hidePf2eHeroPointReroll", true));
+    const setHidden = (/** @type {boolean} */ on) =>
+      gm.page.evaluate((v) => game.settings.set("fate-dice", "hidePf2eHeroPointReroll", v), on);
+    try {
+      // Start from the default, whatever an earlier run left behind.
+      await setHidden(true);
+      await expect.poll(menu).not.toContain("PF2E.RerollMenu.HeroPoint");
+      await setHidden(false);
+      await expect.poll(menu).toContain("PF2E.RerollMenu.HeroPoint");
+    } finally {
+      await setHidden(true);
+    }
   });
 });

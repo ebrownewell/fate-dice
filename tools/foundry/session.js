@@ -40,7 +40,14 @@ export async function joinWorld({
 
   try {
     await page.goto(`${FOUNDRY_URL}/join`);
-    await page.selectOption('select[name="userid"]', { label: user }, { timeout: 30_000 });
+    // The user picker is "userid" in Foundry v13 and "userId" in v14.
+    await page.selectOption(
+      'select[name="userid"], select[name="userId"]',
+      { label: user },
+      {
+        timeout: 30_000,
+      },
+    );
     await page.fill('input[name="password"]', password);
     await Promise.all([page.waitForURL(/\/game$/), page.click('button[name="join"]')]);
     try {

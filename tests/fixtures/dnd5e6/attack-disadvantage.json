@@ -1,0 +1,62 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Longsword - Attack Roll (Disadvantage)",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "system": {
+    "activity": {
+      "id": "dnd5eactivity000",
+      "img": "systems/dnd5e/icons/svg/activity/attack.svg",
+      "name": "Attack",
+      "type": "attack",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ.Activity.dnd5eactivity000"
+    },
+    "item": {
+      "compendiumSource": null,
+      "id": "LnriM3Hjxq9iobeQ",
+      "img": "icons/weapons/swords/greatsword-guard.webp",
+      "name": "Longsword",
+      "type": "weapon",
+      "uuid": "Actor.JVAgEvCRbb63vZ55.Item.LnriM3Hjxq9iobeQ"
+    },
+    "targets": [],
+    "ability": "str",
+    "mode": "oneHanded",
+    "origin": null,
+    "ammunition": null,
+    "deltas": null,
+    "mastery": null
+  },
+  "type": "attack",
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"maximum\":null,\"minimum\":null,\"advantage\":false,\"disadvantage\":false,\"attackMode\":\"oneHanded\",\"criticalSuccess\":20,\"advantageMode\":-1,\"ability\":\"str\",\"criticalFailure\":1,\"configured\":true,\"rollType\":\"attack\"},\"dice\":[],\"formula\":\"1d20dis + 0 + 0\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":-1,\"criticalSuccess\":20,\"criticalFailure\":1,\"pending\":{}},\"evaluated\":true,\"number\":2,\"faces\":20,\"modifiers\":[\"dis\"],\"results\":[{\"result\":3,\"active\":true},{\"result\":18,\"active\":false,\"discarded\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":3,\"evaluated\":true}"
+  ],
+  "_id": "7RFK18XlBrvnWi5C",
+  "style": 0,
+  "author": "bO75wi9E2JEehvMI",
+  "timestamp": 1794796589983,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {
+    "core": {
+      "canPopout": true
+    }
+  },
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796589983,
+    "modifiedTime": 1794796589984,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

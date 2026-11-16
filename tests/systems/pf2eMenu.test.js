@@ -15,6 +15,12 @@ describe("removeHeroPointReroll", () => {
     ]);
   });
 
+  it("also works with Foundry v14 menu entries, which use label instead of name", () => {
+    const options = [{ label: "PF2E.RerollMenu.HeroPoint" }, { label: "PF2E.RerollMenu.KeepNew" }];
+    removeHeroPointReroll(options);
+    expect(options.map((o) => o.label)).toEqual(["PF2E.RerollMenu.KeepNew"]);
+  });
+
   it("does nothing when the entry isn't there", () => {
     const options = [{ name: "A" }];
     removeHeroPointReroll(options);

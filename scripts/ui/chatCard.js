@@ -23,8 +23,20 @@
 const CONTROLS = "fate-dice-controls";
 const BANNER = "fate-dice-banner";
 
-/** @param {HTMLElement} root */
-const contentOf = (root) => root.querySelector(".message-content") ?? root;
+/**
+ * Place an element next to a message's content rather than inside it: some
+ * systems (dnd5e 6) re-render the content after Foundry's render hook, which
+ * would wipe anything added inside. Cards without message content (e.g. one
+ * pf1 attack row) get it appended inside.
+ * @param {HTMLElement} root
+ * @param {HTMLElement} el
+ * @param {"before" | "after"} where
+ */
+function placeBesideContent(root, el, where) {
+  const content = root.querySelector(":scope > .message-content");
+  if (!content) return void (where === "before" ? root.prepend(el) : root.append(el));
+  content.insertAdjacentElement(where === "before" ? "beforebegin" : "afterend", el);
+}
 
 /**
  * "7 → 17 (+10)" when a bonus applied, otherwise just the number.
@@ -82,7 +94,7 @@ export function addFateControls(root, state, { cost, labels, onClick, onJump }) 
     controls.append(button);
   }
 
-  contentOf(root).append(controls);
+  placeBesideContent(root, controls, "after");
 }
 
 /**
@@ -114,5 +126,5 @@ export function addFateBanner(root, outcome, labels, { originalTotal, onJump } =
     });
     banner.append(link);
   }
-  contentOf(root).prepend(banner);
+  placeBesideContent(root, banner, "before");
 }

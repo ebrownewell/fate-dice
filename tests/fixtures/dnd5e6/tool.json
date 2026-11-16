@@ -1,0 +1,48 @@
+{
+  "sound": "sounds/dice.wav",
+  "flavor": "Thieves' Tools Check",
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "JVAgEvCRbb63vZ55",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "system": {
+    "ability": "dex",
+    "skill": null,
+    "tool": "thief",
+    "activity": null,
+    "item": null,
+    "origin": null,
+    "targets": [],
+    "type": "ability"
+  },
+  "type": "check",
+  "rolls": [
+    "{\"class\":\"D20Roll\",\"options\":{\"maximum\":null,\"minimum\":null,\"advantageMode\":0,\"criticalSuccess\":20,\"criticalFailure\":1,\"reliableTalent\":false,\"configured\":true,\"rollType\":\"check\"},\"dice\":[],\"formula\":\"1d20 + 0\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":null,\"elvenAccuracy\":false,\"halflingLucky\":false,\"advantageMode\":0,\"criticalSuccess\":20,\"criticalFailure\":1},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":14,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":null},\"evaluated\":true,\"number\":0}],\"total\":14,\"evaluated\":true}"
+  ],
+  "_id": "LlBXRL4RsMnxN3Ya",
+  "style": 0,
+  "author": "bO75wi9E2JEehvMI",
+  "timestamp": 1794796590773,
+  "content": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {
+    "core": {
+      "canPopout": true
+    }
+  },
+  "_stats": {
+    "coreVersion": "14.370",
+    "systemId": "dnd5e",
+    "systemVersion": "6.1.0",
+    "createdTime": 1794796590773,
+    "modifiedTime": 1794796590774,
+    "lastModifiedBy": "bO75wi9E2JEehvMI",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  }
+}

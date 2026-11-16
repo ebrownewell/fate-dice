@@ -215,3 +215,36 @@ describe("dnd5e buildFatedRoll", () => {
     expect(input).toEqual(before);
   });
 });
+
+describe("dnd5e 6 (Foundry v14) messages", () => {
+  const load6 = (/** @type {string} */ name) => loadMessage("dnd5e6", name);
+  const info6 = (/** @type {string} */ name) => dnd5eAdapter.getRollInfo(load6(name));
+
+  it.each([
+    ["attack-normal", "attack", "normal"],
+    ["attack-advantage", "attack", "advantage"],
+    ["attack-disadvantage", "attack", "disadvantage"],
+    ["save", "save", "normal"],
+    ["ability-check", "ability", "normal"],
+    ["skill", "skill", "normal"],
+    ["skill-disadvantage", "skill", "disadvantage"],
+    ["tool", "tool", "normal"],
+    ["death-save", "death", "normal"],
+    ["initiative", "initiative", "normal"],
+  ])("reads %s as a %s roll (%s)", (name, kind, mode) => {
+    expect(info6(name)).toMatchObject({ kind, mode });
+  });
+
+  it("reads the dice and the kept die", () => {
+    const message = load6("attack-disadvantage");
+    const results = firstRoll(message).terms[0].results.map((/** @type {any} */ r) => r.result);
+    expect(info6("attack-disadvantage")).toMatchObject({
+      dice: results,
+      keptNatural: Math.min(...results),
+    });
+  });
+
+  it("ignores damage rolls", () => {
+    expect(info6("damage")).toBeNull();
+  });
+});
