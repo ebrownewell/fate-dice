@@ -43,7 +43,14 @@ export async function joinWorld({
     await page.selectOption('select[name="userid"]', { label: user }, { timeout: 30_000 });
     await page.fill('input[name="password"]', password);
     await Promise.all([page.waitForURL(/\/game$/), page.click('button[name="join"]')]);
-    await waitForReady(page);
+    try {
+      await waitForReady(page, 45_000);
+    } catch {
+      // The first visitor to a freshly launched world sometimes never finishes
+      // loading (a server-side error while preparing the world); a reload works.
+      await page.reload();
+      await waitForReady(page, 90_000);
+    }
   } catch (err) {
     // Close the browser, or it keeps the Node process alive forever.
     await browser.close();
@@ -63,10 +70,12 @@ export async function activeSystem() {
   return status.active ? status.system : null;
 }
 
-/** @param {import("playwright").Page} page */
-export async function waitForReady(page) {
+/**
+ * @param {import("playwright").Page} page
+ * @param {number} [timeout]
+ */
+export async function waitForReady(page, timeout = 60_000) {
   await page.waitForFunction(() => typeof game !== "undefined" && game?.ready === true, null, {
-    // The first load after a world launches can take over a minute.
-    timeout: 120_000,
+    timeout,
   });
 }

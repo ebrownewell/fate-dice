@@ -46,8 +46,14 @@ export function createApi({ bus }) {
     /** @param {ActorRef} actor Another player's character. @param {string} reason */
     nominate: (actor, reason) => bus.request("nominate", { actorId: toId(actor), reason }),
 
-    /** @param {{ id: string } | string} message A chat message with a d20 roll. */
-    fateReroll: (message) =>
-      bus.request("fateReroll", { messageId: typeof message === "string" ? message : message.id }),
+    /**
+     * @param {{ id: string } | string} message A chat message with a d20 roll.
+     * @param {string} [target] Which roll, for cards with several (e.g. "attack-1").
+     */
+    fateReroll: (message, target = "0") =>
+      bus.request("fateReroll", {
+        messageId: typeof message === "string" ? message : message.id,
+        target,
+      }),
   };
 }

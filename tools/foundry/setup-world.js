@@ -75,6 +75,19 @@ const summary = await page.evaluate(async (testGm) => {
     if (game.system.id === "dnd5e" && actor.system.attributes.hp.max < 20) {
       await actor.update({ "system.attributes.hp.max": 20, "system.attributes.hp.value": 20 });
     }
+    // pf1: a second weapon whose attack card holds two attacks (a full attack).
+    if (game.system.id === "pf1" && !actor.items.getName("Practice Blade")) {
+      const blade = { ...longsword, name: "Practice Blade" };
+      delete blade._id;
+      const [created] = await actor.createEmbeddedDocuments("Item", [blade]);
+      const actions = created.toObject().system.actions;
+      actions[0].extraAttacks = {
+        type: "custom",
+        manual: [{ name: "Second Attack", formula: "-5" }],
+      };
+      actions[0].ability = { ...actions[0].ability, critRange: 19, critMult: 2 };
+      await created.update({ "system.actions": actions });
+    }
     if (user.character?.id !== actor.id) await user.update({ character: actor.id });
   }
 

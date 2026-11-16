@@ -113,14 +113,18 @@ const { system, fixtures } = await page.evaluate(async () => {
       await record("save", () => actor.rollSavingThrow("fort", quiet));
       await record("ability-check", () => actor.rollAbilityTest("str", quiet));
       // Attack cards keep their rolls in message.system, not message.rolls.
-      const longsword = actor.items.getName("Longsword");
-      if (longsword) {
+      for (const [itemName, fixture] of [
+        ["Longsword", "attack-card"],
+        ["Practice Blade", "full-attack-card"],
+      ]) {
+        const item = actor.items.getName(itemName);
+        if (!item) continue;
         const before = new Set(game.messages.keys());
-        await longsword.use(quiet);
+        await item.use(quiet);
         const card = game.messages.contents.find((/** @type {any} */ m) => !before.has(m.id));
         if (card) {
           created.push(card.id);
-          recorded["attack-card"] = card.toObject();
+          recorded[fixture] = card.toObject();
         }
       }
       await recordInitiative();

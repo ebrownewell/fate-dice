@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   checkFateable,
+  fatedMessageFor,
   getButtonState,
   getFateFlags,
 } from "../../scripts/core/fateRerollPolicy.js";
@@ -27,6 +28,18 @@ describe("getFateFlags", () => {
   });
 });
 
+describe("fatedMessageFor", () => {
+  it("reads which message fated a target", () => {
+    expect(fatedMessageFor({ fatedTargets: { "attack-1": "m9" } }, "attack-1")).toBe("m9");
+    expect(fatedMessageFor({ fatedTargets: { "attack-1": "m9" } }, "attack-0")).toBeUndefined();
+  });
+
+  it("treats the older single-roll flag as target '0'", () => {
+    expect(fatedMessageFor({ fatedBy: "m2" }, "0")).toBe("m2");
+    expect(fatedMessageFor({ fatedBy: "m2" }, "attack-0")).toBeUndefined();
+  });
+});
+
 describe("checkFateable", () => {
   const check = (/** @type {any} */ overrides) =>
     checkFateable({ info: rollInfo("skill"), flags: {}, settings, ...overrides });
@@ -44,6 +57,12 @@ describe("checkFateable", () => {
 
   it("refuses anything that isn't a d20 roll", () => {
     expect(check({ info: null })).toEqual({ ok: false, reason: "not-d20" });
+  });
+
+  it("only refuses the target that was already fated", () => {
+    const flags = { fatedTargets: { "attack-0": "m9" } };
+    expect(check({ flags, target: "attack-0" })).toEqual({ ok: false, reason: "already-fated" });
+    expect(check({ flags, target: "attack-1" })).toEqual({ ok: true });
   });
 
   it("refuses a roll that was already fated", () => {

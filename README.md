@@ -7,11 +7,11 @@ A Foundry VTT (v13) module for a hero-point style **Fate Dice** system.
 The Fate Dice pool, log, HUD, GM panel, shop and nominations work in any system. The
 **Fate Reroll** button needs a system adapter:
 
-| System       | Fate Reroll works on                                           | Notes                                                                                                                                                                                                                                                                 |
-| ------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dnd5e (5.3)  | attacks, checks, saves, skills, tools, initiative, death saves | advantage/disadvantage as described below                                                                                                                                                                                                                             |
-| pf2e (7.12)  | checks, saves, perception, strikes, initiative                 | fortune = advantage, misfortune = disadvantage; the degree of success is recomputed (a boosted fate die never counts as a natural 20 or 1). Rolls whose degree was adjusted by an ability get no button. pf2e's own Hero Point reroll is hidden by default (setting). |
-| pf1e (11.11) | skills, saves, ability checks, initiative                      | attack cards (full attacks, crit confirmation) are not supported yet                                                                                                                                                                                                  |
+| System       | Fate Reroll works on                                           | Notes                                                                                                                                                                                                                                                                                                                                                          |
+| ------------ | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dnd5e (5.3)  | attacks, checks, saves, skills, tools, initiative, death saves | advantage/disadvantage as described below                                                                                                                                                                                                                                                                                                                      |
+| pf2e (7.12)  | checks, saves, perception, strikes, initiative                 | fortune = advantage, misfortune = disadvantage; the degree of success is recomputed (a boosted fate die never counts as a natural 20 or 1). Rolls whose degree was adjusted by an ability get no button. pf2e's own Hero Point reroll is hidden by default (setting).                                                                                          |
+| pf1e (11.11) | skills, saves, ability checks, initiative, attacks             | each attack in a full attack has its own button; the fated attack gets a compact card of its own (pf1 can't redraw attack cards). A new crit threat gets a confirmation roll (using the attack's bonus; add any confirmation bonuses) and a reminder to roll crit damage; the card also says when the original's confirmation still applies or no longer does. |
 
 ## Rules (defaults; GM-configurable)
 
@@ -58,7 +58,7 @@ await fate.award(actor, 1, "Great roleplay"); // GM only; actor(s) or ids; note 
 await fate.spend(actor, 1); // owner or GM
 await fate.setPoints(actor, 3); // GM only
 await fate.refund(actor, 1); // GM only, capped at the maximum
-await fate.fateReroll(message); // same as clicking Fate Reroll on that chat card
+await fate.fateReroll(message, target); // same as clicking Fate Reroll; target only for multi-attack cards, e.g. "attack-1"
 await fate.refundEntry(actor, entryId); // GM only: refund a spend from the character's log
 fate.openLog(actor); // open a character's Fate Dice log
 fate.openPanel(); // GM: open the Fate Dice panel

@@ -89,7 +89,13 @@ describe("createApi", () => {
     const { bus, api } = setup();
     await api.fateReroll({ id: "m1" });
     await api.fateReroll("m2");
-    expect(bus.request).toHaveBeenNthCalledWith(1, "fateReroll", { messageId: "m1" });
-    expect(bus.request).toHaveBeenNthCalledWith(2, "fateReroll", { messageId: "m2" });
+    expect(bus.request).toHaveBeenNthCalledWith(1, "fateReroll", { messageId: "m1", target: "0" });
+    expect(bus.request).toHaveBeenNthCalledWith(2, "fateReroll", { messageId: "m2", target: "0" });
+  });
+
+  it("fates one attack of a multi-attack card", async () => {
+    const { bus, api } = setup();
+    await api.fateReroll("m1", "attack-1");
+    expect(bus.request).toHaveBeenCalledWith("fateReroll", { messageId: "m1", target: "attack-1" });
   });
 });

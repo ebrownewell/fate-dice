@@ -214,6 +214,15 @@
       "Why": "Why do they deserve it?",
       "Send": "Nominate",
       "Button": "Nominate…"
+    },
+    "Pf1": {
+      "Title": "{item}, {attack}: {total} (was {was})",
+      "Original": "The original roll stands.",
+      "NewThreat": "Critical threat! Confirmation roll: {total} (d20 {natural}, modifier {modifier}). Add any confirmation bonuses; if it confirms, roll critical damage (×{mult}).",
+      "KeptThreat": "Still a critical threat: use the confirmation and critical damage on the original card.",
+      "LostThreat": "No longer a critical threat: ignore the confirmation and critical damage on the original card.",
+      "Natural20": "Natural 20: an automatic hit.",
+      "Natural1": "Natural 1: an automatic miss."
     }
   }
 }

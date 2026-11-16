@@ -4,6 +4,7 @@
 import { getActorPoints } from "../core/actorPoints.js";
 import { MODULE_ID } from "../core/constants.js";
 import { checkFateable, getButtonState, getFateFlags } from "../core/fateRerollPolicy.js";
+import { getRollTargets } from "../core/rollTargets.js";
 import { readSettings } from "../core/settings.js";
 import { getSystemAdapter } from "../systems/index.js";
 import { addFateBanner, addFateControls } from "../ui/chatCard.js";
@@ -43,24 +44,29 @@ export function registerChatHooks({ bus }) {
       if (flags.fatedFrom && flags.outcome) addFateBanner(html, flags.outcome, labels());
 
       const settings = readSettings(game.settings, MODULE_ID);
-      const info = getSystemAdapter(game.system.id)?.getRollInfo(data) ?? null;
-      const actor = info ? game.actors.get(info.actorId) : null;
-      const state = getButtonState({
-        check: checkFateable({ info, flags, settings }),
-        isOwner: Boolean(actor?.isOwner),
-        points: actor ? getActorPoints(actor) : 0,
-        cost: settings.rerollCost,
-      });
-
-      addFateControls(html, state, {
-        cost: settings.rerollCost,
-        labels: labels(),
-        onClick: () =>
-          bus.request("fateReroll", { messageId: message.id }).catch((err) => {
-            notifyError(err);
-            throw err;
-          }),
-      });
+      const adapter = /** @type {any} */ (getSystemAdapter(game.system.id));
+      for (const { target, info } of getRollTargets(adapter, data)) {
+        const actor = game.actors.get(info.actorId);
+        const state = getButtonState({
+          check: checkFateable({ info, flags, settings, target }),
+          isOwner: Boolean(actor?.isOwner),
+          points: actor ? getActorPoints(actor) : 0,
+          cost: settings.rerollCost,
+        });
+        // Multi-roll cards (pf1 attacks) get a button in each roll's own row.
+        const selector = adapter.controlAnchor?.(target);
+        const anchor = selector ? html.querySelector(selector) : html;
+        if (!(anchor instanceof HTMLElement)) continue;
+        addFateControls(anchor, state, {
+          cost: settings.rerollCost,
+          labels: labels(),
+          onClick: () =>
+            bus.request("fateReroll", { messageId: message.id, target }).catch((err) => {
+              notifyError(err);
+              throw err;
+            }),
+        });
+      }
     },
   );
 

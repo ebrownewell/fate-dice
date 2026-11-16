@@ -338,3 +338,13 @@
 .fate-dice-nomination-status {
   font-weight: bold;
 }
+
+/* pf1 attack rows and fated attack cards */
+
+.chat-attack .fate-dice-controls {
+  margin: 0.15rem 0 0.35rem;
+}
+
+.fate-dice-attack p {
+  margin: 0.2rem 0;
+}

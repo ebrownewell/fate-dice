@@ -5,6 +5,7 @@ import { getActorPoints } from "../../scripts/core/actorPoints.js";
 import { getActorLog } from "../../scripts/core/log.js";
 import { MODULE_ID } from "../../scripts/core/constants.js";
 import { dnd5eAdapter } from "../../scripts/systems/dnd5e.js";
+import { pf1Adapter } from "../../scripts/systems/pf1.js";
 import { editFirstRoll, loadMessage } from "../helpers/fixtures.js";
 import { fakeActor, fakeUser } from "../helpers/fakes.js";
 
@@ -52,10 +53,17 @@ function setup({ points = 2, settings = SETTINGS } = {}) {
     service,
     rollD20: vi.fn(async () => fateDie),
     createFatedMessage: vi.fn(async () => ({ id: `fated-${++created}` })),
-    markFated: vi.fn(async (/** @type {string} */ id, /** @type {string} */ fatedBy) => {
-      const data = messages.get(id);
-      data.flags[MODULE_ID] = { ...data.flags[MODULE_ID], fatedBy };
-    }),
+    markFated: vi.fn(
+      async (
+        /** @type {string} */ id,
+        /** @type {string} */ target,
+        /** @type {string} */ fatedId,
+      ) => {
+        const data = messages.get(id);
+        const flags = (data.flags[MODULE_ID] ??= {});
+        flags.fatedTargets = { ...flags.fatedTargets, [target]: fatedId };
+      },
+    ),
     updateInitiative: vi.fn(async () => {}),
     getDeathState: vi.fn(() => deathState),
     applyDeathSave: vi.fn(async () => {}),
@@ -96,7 +104,7 @@ describe("fateReroll: the happy path", () => {
     expect(userId).toBe("alice");
     expect(outcome).toEqual(result.outcome);
     expect(rollData.total).toBe(result.total);
-    expect(ctx.deps.markFated).toHaveBeenCalledWith("m1", "fated-1");
+    expect(ctx.deps.markFated).toHaveBeenCalledWith("m1", "0", "fated-1");
   });
 
   it("logs the spend as a Fate Reroll linked to the roll", async () => {
@@ -312,5 +320,60 @@ describe("fateReroll: death saves", () => {
     ctx.deps.applyDeathSave.mockRejectedValueOnce(new Error("update failed"));
     await expect(fateAs("alice", "ds")).rejects.toThrow("update failed");
     expect(getActorPoints(ctx.actor)).toBe(2);
+  });
+});
+
+describe("fateReroll: one attack in a pf1 full attack", () => {
+  /** A pf1 full-attack card spoken by the test actor. */
+  function fullAttack() {
+    const message = loadMessage("pf1", "full-attack-card");
+    message.speaker.actor = ACTOR_ID;
+    return message;
+  }
+
+  beforeEach(() => {
+    ctx.deps.getAdapter.mockReturnValue(/** @type {any} */ (pf1Adapter));
+    ctx.addMessage("full", fullAttack());
+  });
+
+  it("fates the chosen attack and marks only that one", async () => {
+    await ctx.handler.fateReroll({ messageId: "full", target: "attack-1" }, { userId: "alice" });
+    const [{ target, rollData }] = /** @type {any} */ (ctx.deps.createFatedMessage.mock.calls[0]);
+    expect(target).toBe("attack-1");
+    const secondAttack = fullAttack().system.rolls.attacks[1].attack;
+    expect(rollData.formula.startsWith(secondAttack.formula)).toBe(true);
+    expect(ctx.deps.markFated).toHaveBeenCalledWith("full", "attack-1", "fated-1");
+  });
+
+  it("lets the other attack be fated afterwards, but not the same one twice", async () => {
+    await ctx.handler.fateReroll({ messageId: "full", target: "attack-1" }, { userId: "alice" });
+    await expect(
+      ctx.handler.fateReroll({ messageId: "full", target: "attack-1" }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "not-fateable" });
+    await expect(
+      ctx.handler.fateReroll({ messageId: "full", target: "attack-0" }, { userId: "alice" }),
+    ).resolves.toMatchObject({ messageId: "fated-2" });
+  });
+
+  it("refuses a target that isn't in the message", async () => {
+    await expect(
+      ctx.handler.fateReroll({ messageId: "full", target: "attack-7" }, { userId: "alice" }),
+    ).rejects.toMatchObject({ code: "not-fateable" });
+  });
+
+  it("rolls a confirmation die for a new crit threat and passes it on", async () => {
+    const attacks = fullAttack().system.rolls.attacks;
+    const index = attacks.findIndex(
+      (/** @type {any} */ a) => a.attack.terms[0].results[0].result < a.attack.options.critical,
+    );
+    if (index < 0) return; // both recorded attacks already threatened
+    ctx.setFateDie(20);
+    await ctx.handler.fateReroll(
+      { messageId: "full", target: `attack-${index}` },
+      { userId: "alice" },
+    );
+    expect(ctx.deps.rollD20).toHaveBeenCalledTimes(2);
+    const [{ extraDice }] = /** @type {any} */ (ctx.deps.createFatedMessage.mock.calls[0]);
+    expect(extraDice).toEqual([20]);
   });
 });

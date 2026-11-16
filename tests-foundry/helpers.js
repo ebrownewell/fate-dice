@@ -38,7 +38,7 @@ export const fateAndRead = async (
   await page.evaluate((messageId) => game.modules.get("fate-dice").api.fateReroll(messageId), id);
   return page.evaluate((messageId) => {
     const original = game.messages.get(messageId);
-    const fated = game.messages.get(original.getFlag("fate-dice", "fatedBy"));
+    const fated = game.messages.get(original.getFlag("fate-dice", "fatedTargets")?.["0"]);
     return {
       original: { total: original.rolls[0].total, natural: original.rolls[0].dice[0].total },
       fated: fated.toObject(),

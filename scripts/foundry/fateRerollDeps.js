@@ -7,6 +7,17 @@ import { readSettings } from "../core/settings.js";
 import { getSystemAdapter } from "../systems/index.js";
 import { snapshotDeathState } from "../rules/deathSave.js";
 
+/** Localization keys for a fated pf1 attack card. */
+export const PF1_ATTACK_LABEL_KEYS = {
+  title: "FATEDICE.Pf1.Title",
+  original: "FATEDICE.Pf1.Original",
+  newThreat: "FATEDICE.Pf1.NewThreat",
+  keptThreat: "FATEDICE.Pf1.KeptThreat",
+  lostThreat: "FATEDICE.Pf1.LostThreat",
+  natural20: "FATEDICE.Pf1.Natural20",
+  natural1: "FATEDICE.Pf1.Natural1",
+};
+
 /**
  * @param {{ service: any }} options
  */
@@ -22,8 +33,25 @@ export function createFoundryFateRerollDeps({ service }) {
       return roll.dice[0].results[0].result;
     },
 
-    /** @param {{ original: any, rollData: any, outcome: any, userId: string, info: any }} args */
-    async createFatedMessage({ original, rollData, outcome, userId, info }) {
+    /** @param {{ original: any, rollData: any, outcome: any, userId: string, info: any, target: string, extraDice: number[] }} args */
+    async createFatedMessage({ original, rollData, outcome, userId, info, target, extraDice }) {
+      const adapter = /** @type {any} */ (getSystemAdapter(game.system.id));
+      // Some rolls (pf1 attacks) get a card of the adapter's own.
+      if (adapter?.buildFatedMessageData) {
+        const data = adapter.buildFatedMessageData({
+          original,
+          target,
+          rollData,
+          outcome,
+          info,
+          userId,
+          extraDice,
+          labels: Object.fromEntries(
+            Object.entries(PF1_ATTACK_LABEL_KEYS).map(([k, key]) => [k, game.i18n.localize(key)]),
+          ),
+        });
+        if (data) return ChatMessage.create({ ...data, sound: CONFIG.sounds.dice });
+      }
       let data = buildFatedMessageData({
         original,
         rollData,
@@ -32,7 +60,6 @@ export function createFoundryFateRerollDeps({ service }) {
         flavorSuffix: game.i18n.localize("FATEDICE.Chat.FateReroll"),
       });
       // Some systems (pf2e) also show the outcome in the card's text.
-      const adapter = /** @type {any} */ (getSystemAdapter(game.system.id));
       if (adapter?.adjustFatedMessage) {
         data = adapter.adjustFatedMessage(data, {
           info,
@@ -44,9 +71,9 @@ export function createFoundryFateRerollDeps({ service }) {
       return ChatMessage.create(data);
     },
 
-    /** @param {string} messageId @param {string} fatedMessageId */
-    markFated: (messageId, fatedMessageId) =>
-      game.messages.get(messageId).setFlag(MODULE_ID, "fatedBy", fatedMessageId),
+    /** @param {string} messageId @param {string} target @param {string} fatedMessageId */
+    markFated: (messageId, target, fatedMessageId) =>
+      game.messages.get(messageId).setFlag(MODULE_ID, `fatedTargets.${target}`, fatedMessageId),
 
     /** @param {{ actorId: string, from: number, to: number }} args */
     async updateInitiative({ actorId, from, to }) {

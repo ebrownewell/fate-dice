@@ -52,7 +52,8 @@ Run through this before each release. It covers what automated tests can't reach
 
 - [ ] pf2e: a fated check's result line (Success/Failure…) and colours look right; DC and margin are shown only to the GM as before.
 - [ ] pf2e: the chat right-click menu no longer offers "Reroll using a Hero Point" (and does when the setting is off).
-- [ ] pf1e: fated skills/saves look right; attack cards have no button.
+- [ ] pf1e: fated skills/saves look right.
+- [ ] pf1e: each attack row in a full attack has a tidy Fate button; the fated attack card reads clearly, including the crit lines.
 
 ### Nominations
 

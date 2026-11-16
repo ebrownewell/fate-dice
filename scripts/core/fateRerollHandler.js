@@ -6,6 +6,7 @@
 import { FateError } from "./errors.js";
 import { checkFateable, getFateFlags } from "./fateRerollPolicy.js";
 import { createKeyedQueue } from "./keyedQueue.js";
+import { getRollTargets } from "./rollTargets.js";
 import { getFateRules } from "./settings.js";
 import { resolveFateReroll } from "../rules/fateReroll.js";
 import { isDeathSaveCurrent, planFatedDeathSave } from "../rules/deathSave.js";
@@ -19,6 +20,9 @@ import { isDeathSaveCurrent, planFatedDeathSave } from "../rules/deathSave.js";
  * @property {string} id
  * @property {(message: any) => RollInfo | null} getRollInfo
  * @property {(roll: any, info: RollInfo, outcome: FateRerollResult) => any} buildFatedRoll
+ * @property {(message: any) => import("./rollTargets.js").RollTarget[]} [getRollTargets]
+ * @property {(args: { message: any, target: string, info: RollInfo, outcome: FateRerollResult }) => number} [extraD20s]
+ *   Extra d20s to roll after the fate die (e.g. a crit confirmation).
  */
 
 /**
@@ -28,8 +32,8 @@ import { isDeathSaveCurrent, planFatedDeathSave } from "../rules/deathSave.js";
  * @param {() => any} deps.getSettings Current setting values (see settings.js).
  * @param {{ spend: Function, rollback: (change: ChangeRecord) => Promise<unknown> }} deps.service
  * @param {() => Promise<number>} deps.rollD20 Rolls the fate die; returns its natural result.
- * @param {(args: { original: any, rollData: any, outcome: FateRerollResult, userId: string, info: RollInfo }) => Promise<{ id: string }>} deps.createFatedMessage
- * @param {(messageId: string, fatedMessageId: string) => Promise<unknown>} deps.markFated
+ * @param {(args: { original: any, rollData: any, outcome: FateRerollResult, userId: string, info: RollInfo, target: string, extraDice: number[] }) => Promise<{ id: string }>} deps.createFatedMessage
+ * @param {(messageId: string, target: string, fatedMessageId: string) => Promise<unknown>} deps.markFated
  * @param {(args: { actorId: string, from: number, to: number }) => Promise<unknown>} deps.updateInitiative
  * @param {(actorId: string) => import("../rules/deathSave.js").DeathState} deps.getDeathState
  * @param {(args: { actorId: string, updates: Record<string, number>, chatKey: string | null }) => Promise<unknown>} deps.applyDeathSave
@@ -39,19 +43,25 @@ export function createFateRerollHandler(deps) {
 
   return {
     /**
-     * @param {{ messageId: string }} payload
+     * @param {{ messageId: string, target?: string }} payload Target defaults to "0".
      * @param {{ userId: string }} context
      */
-    fateReroll({ messageId }, { userId }) {
+    fateReroll({ messageId, target: rollTarget = "0" }, { userId }) {
       return queue.run(`message:${messageId}`, async () => {
         const message = typeof messageId === "string" ? deps.getMessage(messageId) : undefined;
         if (!message) throw new FateError("not-found", "That chat message no longer exists");
 
         const settings = deps.getSettings();
         const adapter = deps.getAdapter();
-        const info = adapter?.getRollInfo(message) ?? null;
-        const check = checkFateable({ info, flags: getFateFlags(message), settings });
-        if (!adapter || !info || !check.ok) {
+        const chosen = getRollTargets(adapter, message).find((t) => t.target === rollTarget);
+        const info = chosen?.info ?? null;
+        const check = checkFateable({
+          info,
+          flags: getFateFlags(message),
+          settings,
+          target: rollTarget,
+        });
+        if (!adapter || !chosen || !info || !check.ok) {
           throw new FateError(
             "not-fateable",
             `Can't fate this roll (${check.ok ? "no adapter" : check.reason})`,
@@ -97,15 +107,21 @@ export function createFateRerollHandler(deps) {
             rules: getFateRules(settings),
             critThreshold: info.critThreshold,
           });
-          const rollData = adapter.buildFatedRoll(message.rolls[0], info, outcome);
+          const rollData = adapter.buildFatedRoll(chosen.roll, info, outcome);
+          const extraCount =
+            adapter.extraD20s?.({ message, target: rollTarget, info, outcome }) ?? 0;
+          const extraDice = [];
+          for (let i = 0; i < extraCount; i++) extraDice.push(await deps.rollD20());
           const created = await deps.createFatedMessage({
             original: message,
             rollData,
             outcome,
             userId,
             info,
+            target: rollTarget,
+            extraDice,
           });
-          await deps.markFated(messageId, created.id);
+          await deps.markFated(messageId, rollTarget, created.id);
 
           if (deathSave && outcome.kept === "fate") {
             const plan = planFatedDeathSave({

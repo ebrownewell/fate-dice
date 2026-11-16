@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { CLIENT_SETTING_DEFINITIONS, SETTING_DEFINITIONS } from "../scripts/core/settings.js";
 import { ERROR_CODES } from "../scripts/core/errors.js";
 import { CHAT_LABEL_KEYS } from "../scripts/foundry/chatHooks.js";
+import { PF1_ATTACK_LABEL_KEYS } from "../scripts/foundry/fateRerollDeps.js";
 import { LOG_LABEL_KEYS } from "../scripts/ui/logRows.js";
 import { LOG_APP_KEYS, NOMINATION_KEYS, PANEL_KEYS, SHOP_KEYS } from "../scripts/apps/labels.js";
 
@@ -25,9 +26,12 @@ describe("English translations", () => {
     }
   });
 
-  it.each(Object.values(CHAT_LABEL_KEYS))("has chat label %s", (key) => {
-    expect(lookup(key)).toEqual(expect.any(String));
-  });
+  it.each([...Object.values(CHAT_LABEL_KEYS), ...Object.values(PF1_ATTACK_LABEL_KEYS)])(
+    "has chat label %s",
+    (key) => {
+      expect(lookup(key)).toEqual(expect.any(String));
+    },
+  );
 
   it.each([...LOG_LABEL_KEYS, ...LOG_APP_KEYS, ...PANEL_KEYS, ...SHOP_KEYS, ...NOMINATION_KEYS])(
     "has label %s",

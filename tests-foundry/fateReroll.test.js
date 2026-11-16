@@ -79,7 +79,10 @@ const fatedResultOf = async (
   await expect
     .poll(
       () =>
-        page.evaluate((mid) => game.messages.get(mid)?.getFlag("fate-dice", "fatedBy") ?? null, id),
+        page.evaluate(
+          (mid) => game.messages.get(mid)?.getFlag("fate-dice", "fatedTargets")?.["0"] ?? null,
+          id,
+        ),
       {
         timeout: 15_000,
       },
@@ -87,7 +90,7 @@ const fatedResultOf = async (
     .not.toBeNull();
   return page.evaluate((mid) => {
     const original = game.messages.get(mid);
-    const fated = game.messages.get(original.getFlag("fate-dice", "fatedBy"));
+    const fated = game.messages.get(original.getFlag("fate-dice", "fatedTargets")?.["0"]);
     return {
       originalTotal: original.rolls[0].total,
       keptNatural: original.rolls[0].dice[0].total,
