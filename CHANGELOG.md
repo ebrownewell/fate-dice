@@ -6,6 +6,10 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **Matching a Fate Reroll to its original roll**, for busy tables where several players make the same roll:
+  - The fated card's banner shows the original total ("… · was 9") and a "↩ original" link that scrolls to the original and flashes it (or opens it in a popout if it's no longer loaded in the chat log).
+  - The original's "Fated" marker links to the fated card the same way.
+  - Hovering either card outlines its partner.
 - **pf2e support** (7.12, the last pf2e for Foundry v13): Fate Reroll on checks, saves, perception, strikes and initiative. Fortune/misfortune count as advantage/disadvantage; the degree of success is recomputed and shown on the card. New setting (pf2e only, on by default): hide pf2e's own "Reroll using a Hero Point".
 - **pf1e support** (11.11): Fate Reroll on skills, saves, ability checks, initiative and attacks.
   - Each attack in a full attack has its own Fate button; only that attack is marked fated.

@@ -9,6 +9,10 @@ const LABELS = {
   kept: "kept",
   notKept: "not kept",
   reasons: { "insufficient-points": "Not enough Fate Dice." },
+  was: "was {total}",
+  original: "original",
+  viewOriginal: "Show the original roll",
+  viewFated: "Show the Fate Reroll",
 };
 
 /** A chat message element shaped like Foundry's. */
@@ -59,6 +63,16 @@ describe("addFateControls", () => {
     addFateControls(root, { visible: false, fated: true }, { cost: 1, labels: LABELS });
     expect(root.querySelector(".fate-dice-fated")?.textContent).toBe("Fated");
     expect(root.querySelector("button")).toBeNull();
+  });
+
+  it("makes the Fated marker a link to the fated roll when given onJump", () => {
+    const onJump = vi.fn();
+    addFateControls(root, { visible: false, fated: true }, { cost: 1, labels: LABELS, onJump });
+    const marker = /** @type {HTMLElement} */ (root.querySelector(".fate-dice-fated"));
+    expect(marker.tagName).toBe("A");
+    expect(marker.title).toBe("Show the Fate Reroll");
+    marker.click();
+    expect(onJump).toHaveBeenCalledTimes(1);
   });
 
   it("adds nothing when the button is hidden", () => {
@@ -119,11 +133,30 @@ describe("addFateBanner", () => {
     addFateBanner(root, outcome, LABELS);
     expect(root.querySelector(".fate-dice-banner")?.textContent).toBe(
       "Fate Reroll: 7 → 17 (+10), kept",
-    );
+    ); // no original total or link given
     addFateBanner(root, { ...outcome, kept: "original" }, LABELS);
     expect(root.querySelector(".fate-dice-banner")?.textContent).toBe(
       "Fate Reroll: 7 → 17 (+10), not kept",
     );
+  });
+
+  it("shows what the original roll was, so pairs are easy to match", () => {
+    addFateBanner(root, outcome, LABELS, { originalTotal: 9 });
+    expect(root.querySelector(".fate-dice-banner")?.textContent).toContain(
+      "Fate Reroll: 7 → 17 (+10), kept · was 9",
+    );
+  });
+
+  it("links back to the original when given onJump", () => {
+    const onJump = vi.fn();
+    addFateBanner(root, outcome, LABELS, { onJump });
+    const link = /** @type {HTMLElement} */ (
+      root.querySelector(".fate-dice-banner .fate-dice-jump")
+    );
+    expect(link.title).toBe("Show the original roll");
+    expect(link.textContent).toContain("original");
+    link.click();
+    expect(onJump).toHaveBeenCalledTimes(1);
   });
 
   it("never adds a second banner on re-render", () => {

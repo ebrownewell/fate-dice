@@ -3,11 +3,17 @@
 
 import { getActorPoints } from "../core/actorPoints.js";
 import { MODULE_ID } from "../core/constants.js";
-import { checkFateable, getButtonState, getFateFlags } from "../core/fateRerollPolicy.js";
+import {
+  checkFateable,
+  fatedMessageFor,
+  getButtonState,
+  getFateFlags,
+} from "../core/fateRerollPolicy.js";
 import { getRollTargets } from "../core/rollTargets.js";
 import { readSettings } from "../core/settings.js";
 import { getSystemAdapter } from "../systems/index.js";
 import { addFateBanner, addFateControls } from "../ui/chatCard.js";
+import { highlightMessages, jumpToMessage } from "../ui/chatLinks.js";
 import { notifyError } from "./notify.js";
 
 /** Localization keys used on chat cards. */
@@ -17,7 +23,35 @@ export const CHAT_LABEL_KEYS = {
   banner: "FATEDICE.Chat.FateReroll",
   kept: "FATEDICE.Chat.Kept",
   notKept: "FATEDICE.Chat.NotKept",
+  was: "FATEDICE.Chat.Was",
+  original: "FATEDICE.Chat.Original",
+  viewOriginal: "FATEDICE.Chat.ViewOriginal",
+  viewFated: "FATEDICE.Chat.ViewFated",
 };
+
+/**
+ * Scroll to a message in the chat log and flash it; if it isn't loaded
+ * there (too far back), open it in a popout instead.
+ * @param {string | undefined} messageId
+ */
+function showMessage(messageId) {
+  if (!messageId) return;
+  if (jumpToMessage(document, messageId, { container: ui.chat?.element })) return;
+  const message = game.messages.get(messageId);
+  if (!message) return ui.notifications.info(game.i18n.localize("FATEDICE.Log.MessageGone"));
+  new foundry.applications.sidebar.apps.ChatPopout({ message }).render({ force: true });
+}
+
+/**
+ * Outline the partner card(s) while the pointer is over this one.
+ * @param {HTMLElement} html
+ * @param {string[]} partnerIds
+ */
+function linkOnHover(html, partnerIds) {
+  if (!partnerIds.length) return;
+  html.addEventListener("mouseenter", () => highlightMessages(document, partnerIds, true));
+  html.addEventListener("mouseleave", () => highlightMessages(document, partnerIds, false));
+}
 
 /** @returns {import("../ui/chatCard.js").ChatCardLabels} */
 function labels() {
@@ -41,7 +75,18 @@ export function registerChatHooks({ bus }) {
     (/** @type {any} */ message, /** @type {HTMLElement} */ html) => {
       const data = message.toObject();
       const flags = getFateFlags(data);
-      if (flags.fatedFrom && flags.outcome) addFateBanner(html, flags.outcome, labels());
+      if (flags.fatedFrom && flags.outcome) {
+        const original = flags.fatedFrom;
+        addFateBanner(html, flags.outcome, labels(), {
+          originalTotal: flags.originalTotal,
+          onJump: () => showMessage(original),
+        });
+        linkOnHover(html, [original]);
+      }
+      linkOnHover(html, [
+        ...Object.values(flags.fatedTargets ?? {}),
+        ...(flags.fatedBy ? [flags.fatedBy] : []),
+      ]);
 
       const settings = readSettings(game.settings, MODULE_ID);
       const adapter = /** @type {any} */ (getSystemAdapter(game.system.id));
@@ -60,6 +105,7 @@ export function registerChatHooks({ bus }) {
         addFateControls(anchor, state, {
           cost: settings.rerollCost,
           labels: labels(),
+          onJump: () => showMessage(fatedMessageFor(flags, target)),
           onClick: () =>
             bus.request("fateReroll", { messageId: message.id, target }).catch((err) => {
               notifyError(err);

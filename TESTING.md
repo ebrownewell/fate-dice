@@ -27,6 +27,11 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] Dice sound plays for the fated roll.
 - [ ] The button looks right on a whispered/blind roll (GM roll modes).
 
+### Matching fated rolls to originals
+
+- [ ] With several players making the same roll, the hover outline and "↩ original" link make each pair obvious, in both themes.
+- [ ] Jumping to an old roll that's no longer loaded in the chat log opens it in a popout.
+
 ### Log window
 
 - [ ] The Fate Dice button shows in the character sheet header (owner and GM) and opens the log.

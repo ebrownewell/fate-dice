@@ -202,7 +202,7 @@ describe.skipIf(skip)("clicking Fate Reroll", () => {
       await expect.poll(() => chatCard(page, id)).toMatchObject({ button: null, fated: "Fated" });
       await expect
         .poll(async () => (await chatCard(page, fatedId)).banner ?? "")
-        .toMatch(/^Fate Reroll: \d+( → \d+ \(\+\d+\))?, (kept|not kept)$/);
+        .toMatch(/^Fate Reroll: \d+( → \d+ \(\+\d+\))?, (kept|not kept) · was -?\d+ ↩ original$/);
     }
     // The fated result itself can't be fated again.
     expect((await chatCard(player.page, fatedId)).button).toBeNull();
@@ -221,6 +221,82 @@ describe.skipIf(skip)("clicking Fate Reroll", () => {
     );
     expect(code).toBe("not-fateable");
     expect(await getPoints(player.page)).toBe(1);
+  });
+});
+
+describe.skipIf(skip)("telling which roll a Fate Reroll belongs to", () => {
+  /** Fate a fresh attack and return both message ids and the original total. */
+  async function fatedPair() {
+    const id = await rollAs(player.page, "attack");
+    await expect
+      .poll(() => chatCard(player.page, id))
+      .toMatchObject({ button: { disabled: false } });
+    await clickFate(player.page, id);
+    const { fatedId, originalTotal } = await fatedResultOf(player.page, id);
+    return { id, fatedId, originalTotal };
+  }
+
+  /** Whether a message's chat-log copy currently has a class. */
+  const hasClass = (/** @type {string} */ messageId, /** @type {string} */ cls) =>
+    player.page.evaluate(
+      ([mid, c]) =>
+        [...ui.chat.element.querySelectorAll("[data-message-id]")].some(
+          (el) =>
+            /** @type {HTMLElement} */ (el).dataset.messageId === mid && el.classList.contains(c),
+        ),
+      [messageId, cls],
+    );
+
+  /** Click something inside a message's chat-log copy. */
+  const clickIn = (/** @type {string} */ messageId, /** @type {string} */ selector) =>
+    player.page.evaluate(
+      ([mid, sel]) => {
+        const card = [...ui.chat.element.querySelectorAll("[data-message-id]")].find(
+          (el) => /** @type {HTMLElement} */ (el).dataset.messageId === mid,
+        );
+        const target = card?.querySelector(sel);
+        if (!(target instanceof HTMLElement)) throw new Error(`Nothing matches ${sel}`);
+        target.click();
+      },
+      [messageId, selector],
+    );
+
+  it("shows the original total on the fated card's banner", async () => {
+    const { fatedId, originalTotal } = await fatedPair();
+    await expect
+      .poll(async () => (await chatCard(player.page, fatedId)).banner ?? "")
+      .toContain(`was ${originalTotal}`);
+  });
+
+  it("the fated card links back to the original, and the original's Fated marker links forward", async () => {
+    const { id, fatedId } = await fatedPair();
+    await expect.poll(() => chatCard(player.page, fatedId)).toMatchObject({ rendered: true });
+    await clickIn(fatedId, ".fate-dice-jump");
+    await expect.poll(() => hasClass(id, "fate-dice-flash")).toBe(true);
+    await clickIn(id, "a.fate-dice-fated");
+    await expect.poll(() => hasClass(fatedId, "fate-dice-flash")).toBe(true);
+  });
+
+  it("hovering either card outlines its partner", async () => {
+    const { id, fatedId } = await fatedPair();
+    const hover = (/** @type {string} */ mid, /** @type {string} */ type) =>
+      player.page.evaluate(
+        ([m, t]) => {
+          const card = [...ui.chat.element.querySelectorAll("[data-message-id]")].find(
+            (el) => /** @type {HTMLElement} */ (el).dataset.messageId === m,
+          );
+          card?.dispatchEvent(new MouseEvent(t));
+        },
+        [mid, type],
+      );
+    await expect.poll(() => chatCard(player.page, fatedId)).toMatchObject({ rendered: true });
+    await hover(fatedId, "mouseenter");
+    expect(await hasClass(id, "fate-dice-linked")).toBe(true);
+    await hover(fatedId, "mouseleave");
+    expect(await hasClass(id, "fate-dice-linked")).toBe(false);
+    await hover(id, "mouseenter");
+    expect(await hasClass(fatedId, "fate-dice-linked")).toBe(true);
+    await hover(id, "mouseleave");
   });
 });
 

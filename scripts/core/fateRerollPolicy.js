@@ -9,6 +9,7 @@ import { MODULE_ID } from "./constants.js";
  * @property {string} [fatedBy] Older single-roll flag: the fated result of target "0".
  * @property {Record<string, string>} [fatedTargets] On an original roll: target → fated result message id.
  * @property {string} [target] On a fated result: which roll of the original it fated.
+ * @property {number} [originalTotal] On a fated result: the original roll's total.
  * @property {string} [fatedFrom] On a fated result: the id of the original roll message.
  * @property {import("../rules/fateReroll.js").FateRerollResult} [outcome] On a fated result.
  * @property {{ before: import("../rules/deathSave.js").DeathState }} [deathSave] On a death save: the character before it.

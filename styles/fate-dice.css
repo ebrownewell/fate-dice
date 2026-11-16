@@ -348,3 +348,35 @@
 .fate-dice-attack p {
   margin: 0.2rem 0;
 }
+
+/* Linking a fated roll and its original */
+
+.fate-dice-jump,
+a.fate-dice-fated {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.fate-dice-jump {
+  margin-left: 0.25rem;
+  font-weight: normal;
+}
+
+.chat-message.fate-dice-linked {
+  outline: 2px solid var(--color-warm-2, #c9593f);
+  outline-offset: -2px;
+}
+
+@keyframes fate-dice-flash {
+  from {
+    box-shadow: 0 0 0 3px var(--color-warm-2, #c9593f);
+  }
+  to {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.chat-message.fate-dice-flash {
+  animation: fate-dice-flash 1.6s ease-out;
+}

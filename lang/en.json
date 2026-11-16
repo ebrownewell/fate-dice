@@ -74,7 +74,11 @@
       "Fated": "Fated",
       "FateReroll": "Fate Reroll",
       "Kept": "kept",
-      "NotKept": "not kept"
+      "NotKept": "not kept",
+      "Was": "was {total}",
+      "Original": "original",
+      "ViewOriginal": "Show the original roll",
+      "ViewFated": "Show the Fate Reroll"
     },
     "Log": {
       "Open": "Fate Dice",

@@ -46,7 +46,23 @@ describe("buildFatedMessageData", () => {
   it("keeps the system's flags and links back to the original", () => {
     const { data, original } = build("attack-disadvantage");
     expect(data.flags.dnd5e).toEqual(original.flags.dnd5e);
-    expect(data.flags[MODULE_ID]).toEqual({ fatedFrom: "orig", outcome });
+    expect(data.flags[MODULE_ID]).toEqual({
+      fatedFrom: "orig",
+      outcome,
+      originalTotal: firstRoll(original).total,
+    });
+  });
+
+  it("records the original total, so the cards can be matched up", () => {
+    const original = { ...loadMessage("dnd5e", "skill"), _id: "orig" };
+    const data = buildFatedMessageData({
+      original,
+      rollData: firstRoll(original),
+      outcome,
+      userId: "alice",
+      flavorSuffix: "Fate Reroll",
+    });
+    expect(data.flags[MODULE_ID].originalTotal).toBe(firstRoll(original).total);
   });
 
   it("never copies the original's own fate flags", () => {

@@ -20,7 +20,8 @@ export function buildFatedMessageData({ original, rollData, outcome, userId, fla
   for (const key of ["_id", "timestamp", "_stats"]) delete rest[key];
   const originalTotal = JSON.parse(original.rolls[0]).total;
   const flags = { ...rest.flags };
-  flags[MODULE_ID] = { fatedFrom: _id, outcome };
+  // The original total is shown on the fated card, to help match the two up.
+  flags[MODULE_ID] = { fatedFrom: _id, outcome, originalTotal };
 
   return {
     ...rest,
