@@ -1,67 +1,21 @@
 # Testing
 
-## Automated
+`npm test` runs the unit tests. `npm run test:foundry` runs the browser tests against a local
+Foundry (see `tools/foundry/README.md`). With the Quench module installed you can also run the
+Fate Dice batches from inside Foundry as a GM.
 
-- `npm test`: unit tests for everything that can run outside Foundry.
-- `npm run test:foundry`: runs the Quench batches and the multi-client browser tests against the
-  local dev server. See `tools/foundry/README.md` for setting it up.
-- **In Foundry:** install and enable the [Quench](https://github.com/Ethaks/FVTT-Quench) module,
-  then open Quench's test window as a GM and run the **Fate Dice** batches. They create and delete
-  a temporary actor named "Fate Dice integration test".
+## Things to check by hand before a release
 
-## Manual checklist
-
-Run through this before each release. It covers what automated tests can't reach (visuals and feel).
-
-### Setup
-
-- [ ] Module enables in a v13 world with no console errors.
-- [ ] All Fate Dice settings appear under Configure Settings → Fate Dice, with readable names and hints.
-- [ ] A player client (separate browser) can call `game.modules.get("fate-dice").api.spend(...)` on
-      their own character while the GM is connected, and gets a `no-gm` error when no GM is.
-
-### Fate Reroll chat cards
-
-- [ ] The button sits neatly under the roll in both light and dark UI themes.
-- [ ] The fated result's banner and `+10[Fate]` term read clearly; the dice tooltip shows the fate die.
-- [ ] Dice sound plays for the fated roll.
-- [ ] The button looks right on a whispered/blind roll (GM roll modes).
-
-### Matching fated rolls to originals
-
-- [ ] With several players making the same roll, the hover outline and "↩ original" link make each pair obvious, in both themes.
-- [ ] Jumping to an old roll that's no longer loaded in the chat log opens it in a popout.
-
-### Log window
-
-- [ ] The Fate Dice button shows in the character sheet header (owner and GM) and opens the log.
-- [ ] The log reads well in light and dark themes and with a long history (scrolls, header stays put).
-- [ ] "view roll" opens the roll in a popout; on a deleted message it says so.
-- [ ] The refund confirmation reads correctly.
-
-### HUD and GM panel
-
-- [ ] The HUD doesn't cover anything important at its default spot (above the players list), in both themes.
-- [ ] Dragging feels right; the HUD stays on screen after resizing the window.
-- [ ] The GM panel reads well with 5+ characters and long names.
-- [ ] The "Award…" dialog is clear; its note shows in the character's log.
-
-### Shop
-
-- [ ] Shop and editor read well in both themes, with long descriptions and many items.
-- [ ] The item edit dialog is clear; invalid input shows a helpful error.
-- [ ] Importing a real shared file shows a sensible preview; warnings are readable.
-- [ ] The purchase announcement in chat looks right, with and without a note.
-
-### pf2e and pf1e
-
-- [ ] pf2e: a fated check's result line (Success/Failure…) and colours look right; DC and margin are shown only to the GM as before.
-- [ ] pf2e: the chat right-click menu no longer offers "Reroll using a Hero Point" (and does when the setting is off).
-- [ ] pf1e: fated skills/saves look right.
-- [ ] pf1e: each attack row in a full attack has a tidy Fate button; the fated attack card reads clearly, including the crit lines.
-
-### Nominations
-
-- [ ] The nominate dialog lists the right characters and reads clearly.
-- [ ] Nomination cards (pending, approved, rejected; GM and vote modes) read well in both themes.
-- [ ] Voting feels responsive with several players online.
+- Module loads in a v13 world with no console errors, and the settings make sense.
+- Fate Reroll button and the fated card look right in light and dark themes, including whispered
+  and blind rolls.
+- With a few players making the same roll, it's easy to tell which fated roll goes with which
+  (hover outline, "original" link).
+- Sheet button, log, refunds and "view roll" work.
+- HUD sits somewhere sensible and can be dragged. GM panel is readable with lots of characters.
+- Shop and shop editor are readable, the edit dialog makes sense, and importing a shared file
+  shows a sensible preview.
+- pf2e: the result line updates on fated checks and the hero point reroll is gone from the chat
+  menu.
+- pf1e: fated skills and saves look right, and the fated attack card reads clearly.
+- Nomination cards look right in both modes.

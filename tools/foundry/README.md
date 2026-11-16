@@ -5,10 +5,10 @@ None of this ships with the module, and CI can't run it (it needs a license).
 
 ## One-time setup (macOS)
 
-1. Download the **Node.js** build of Foundry v13 from foundryvtt.com → Purchased Licenses.
+1. Download the **Node.js** build of Foundry v13 from foundryvtt.com (Purchased Licenses).
 2. Unzip it to `~/foundry/v13`, then clear the download quarantine so macOS will load its native
    libraries: `xattr -dr com.apple.quarantine ~/foundry/v13`
-3. Foundry 13 needs Node 20–22: `nvm install 22` and `echo 22 > ~/foundry/.nvmrc`.
+3. Foundry 13 needs Node 20 to 22: `nvm install 22` and `echo 22 > ~/foundry/.nvmrc`.
 4. Install into `~/foundry/dev-data/Data`:
    - `systems/dnd5e`: dnd5e 5.3.3 (`gh release download release-5.3.3 -R foundryvtt/dnd5e`)
    - `modules/quench`: Quench (`gh release download v0.10.0 -R Ethaks/FVTT-Quench`, use `dist/`)
@@ -29,8 +29,8 @@ None of this ships with the module, and CI can't run it (it needs a license).
    creates Players A, B and C with characters (20 HP, a longsword). The first run joins as
    Gamemaster to create Test GM, so make sure nobody is logged in as Gamemaster then.
 
-Automation always joins as **Test GM**, so you can stay logged in as Gamemaster while tests run.
-One test ("no GM connected") skips itself while you are, since a GM is then online.
+The tests log in as **Test GM**, so you can stay logged in as Gamemaster while they run (the
+"no GM connected" test skips itself if you are). Don't use the Player A/B/C accounts while tests run.
 
 ### Other systems
 
