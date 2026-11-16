@@ -1,0 +1,39 @@
+{
+  "type": "check",
+  "style": 0,
+  "sound": "sounds/dice.wav",
+  "content": "<span class=\"flavor-text\">\n\n  Fortitude Saving Throw\n\n</span>\n\n<div class=\"dice-roll\" data-action=\"expandRoll\">\n  <div class=\"dice-result\">\n    <h3 class=\"roll-total dice-total has-details\" data-natural=\"7\" data-bonus=\"0\" data-total=\"7\">\n      <i class=\"fa-solid fa-dice-d20\" inert></i>\n      <span class=\"natural\">7</span>\n      <span class=\"bonus\">+0</span>\n      <span class=\"equals\">⇒</span>\n      <span class=\"total\">7</span>\n    </h3>\n\n    <div class=\"dice-tooltip\">\n  <div class=\"wrapper\">\n    <section class=\"tooltip-part\">\n      <div class=\"dice\">\n        <header class=\"part-header flexrow\">\n          <span class=\"part-formula\">1d20</span>\n          <span class=\"part-flavor \">Check</span>\n          <span class=\"part-total\">7</span>\n        </header>\n        <ol class=\"dice-rolls\">\n          <li class=\"roll die d20\">7</li>\n        </ol>\n      </div>\n    </section>\n\n  </div>\n</div>\n\n  </div>\n\n</div>",
+  "system": {
+    "subject": {
+      "save": "fort"
+    }
+  },
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "DwJEARHMPHWGasB8",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "rolls": [
+    "{\"class\":\"D20RollPF\",\"options\":{\"critical\":20,\"flavor\":\"Fortitude Saving Throw\"},\"dice\":[],\"formula\":\"1d20\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":\"Check\"},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":7,\"active\":true}]}],\"total\":7,\"evaluated\":true}"
+  ],
+  "_id": "jNN6pTr6oCoSWKfu",
+  "author": "OhbQcY1xdZge6iBG",
+  "timestamp": 1794786864000,
+  "flavor": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.351",
+    "systemId": "pf1",
+    "systemVersion": "11.11",
+    "createdTime": 1794786864001,
+    "modifiedTime": 1794786864001,
+    "lastModifiedBy": "OhbQcY1xdZge6iBG"
+  }
+}

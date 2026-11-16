@@ -28,7 +28,7 @@ import { isDeathSaveCurrent, planFatedDeathSave } from "../rules/deathSave.js";
  * @param {() => any} deps.getSettings Current setting values (see settings.js).
  * @param {{ spend: Function, rollback: (change: ChangeRecord) => Promise<unknown> }} deps.service
  * @param {() => Promise<number>} deps.rollD20 Rolls the fate die; returns its natural result.
- * @param {(args: { original: any, rollData: any, outcome: FateRerollResult, userId: string }) => Promise<{ id: string }>} deps.createFatedMessage
+ * @param {(args: { original: any, rollData: any, outcome: FateRerollResult, userId: string, info: RollInfo }) => Promise<{ id: string }>} deps.createFatedMessage
  * @param {(messageId: string, fatedMessageId: string) => Promise<unknown>} deps.markFated
  * @param {(args: { actorId: string, from: number, to: number }) => Promise<unknown>} deps.updateInitiative
  * @param {(actorId: string) => import("../rules/deathSave.js").DeathState} deps.getDeathState
@@ -103,6 +103,7 @@ export function createFateRerollHandler(deps) {
             rollData,
             outcome,
             userId,
+            info,
           });
           await deps.markFated(messageId, created.id);
 

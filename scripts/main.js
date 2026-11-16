@@ -9,6 +9,7 @@ import { createFateService } from "./core/fateService.js";
 import { createRequestBus } from "./core/requestBus.js";
 import { registerSettings } from "./core/settings.js";
 import { TEMPLATES } from "./core/templates.js";
+import { removeHeroPointReroll } from "./systems/pf2eMenu.js";
 import { registerChatHooks } from "./foundry/chatHooks.js";
 import { registerDeathSaveHooks } from "./foundry/deathSaveHooks.js";
 import { registerSheetHooks } from "./foundry/sheetHooks.js";
@@ -27,10 +28,18 @@ import {
 } from "./foundry/nominationHooks.js";
 
 Hooks.once("init", () => {
-  registerSettings(game.settings, MODULE_ID);
+  registerSettings(game.settings, MODULE_ID, game.system.id);
   foundry.applications.handlebars.loadTemplates(TEMPLATES);
   registerShopMenu();
   if (game.system.id === "dnd5e") registerDeathSaveHooks();
+  if (game.system.id === "pf2e") {
+    Hooks.on(
+      "getChatMessageContextOptions",
+      (/** @type {any} */ _app, /** @type {any[]} */ options) => {
+        if (game.settings.get(MODULE_ID, "hidePf2eHeroPointReroll")) removeHeroPointReroll(options);
+      },
+    );
+  }
 });
 
 Hooks.once("ready", () => {

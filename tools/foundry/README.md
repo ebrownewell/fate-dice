@@ -32,6 +32,20 @@ None of this ships with the module, and CI can't run it (it needs a license).
 Automation always joins as **Test GM**, so you can stay logged in as Gamemaster while tests run.
 One test ("no GM connected") skips itself while you are, since a GM is then online.
 
+### Other systems
+
+The same server has pf2e 7.12.2 (the last release for Foundry v13) and pf1 11.11 installed, with
+worlds `fate-dice-pf2e` and `fate-dice-pf1`. Only one world runs at a time:
+
+```sh
+~/foundry/start.sh --world=fate-dice-pf2e   # then: npm run foundry:setup (first time)
+npm run test:foundry                        # tests for other systems skip themselves
+node tools/foundry/record-fixtures.js       # records fixtures for the running world's system
+```
+
+`npm run foundry:setup` also turns off pf2e's roll dialogs for the test users. Run each world's
+tests after changing shared code. The first browser to load a freshly launched world is slow.
+
 ## Day to day
 
 ```sh

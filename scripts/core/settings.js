@@ -50,7 +50,20 @@ export const SETTING_DEFINITIONS = {
     range: { min: 1, max: 20, step: 1 },
   },
   rerollOnInitiative: { ...i18n("RerollOnInitiative"), ...world, type: Boolean, default: true },
-  rerollOnDeathSaves: { ...i18n("RerollOnDeathSaves"), ...world, type: Boolean, default: true },
+  rerollOnDeathSaves: {
+    ...i18n("RerollOnDeathSaves"),
+    ...world,
+    type: Boolean,
+    default: true,
+    systems: ["dnd5e"],
+  },
+  hidePf2eHeroPointReroll: {
+    ...i18n("HidePf2eHeroPointReroll"),
+    ...world,
+    type: Boolean,
+    default: true,
+    systems: ["pf2e"],
+  },
   nominationMode: {
     ...i18n("NominationMode"),
     ...world,
@@ -98,17 +111,22 @@ export const STATE_SETTING_DEFINITIONS = {
 /** @typedef {keyof typeof SETTING_DEFINITIONS} SettingKey */
 
 /**
+ * Register every setting. A setting marked with `systems` is still
+ * registered everywhere, but only shown in those systems' settings menu.
  * @param {SettingsApi} api game.settings
  * @param {string} moduleId
+ * @param {string} [systemId] The active game system.
  */
-export function registerSettings(api, moduleId) {
+export function registerSettings(api, moduleId, systemId) {
   for (const definitions of [
     SETTING_DEFINITIONS,
     CLIENT_SETTING_DEFINITIONS,
     STATE_SETTING_DEFINITIONS,
   ]) {
     for (const [key, definition] of Object.entries(definitions)) {
-      api.register(moduleId, key, definition);
+      const { systems, ...data } = /** @type {any} */ (definition);
+      if (systems && systemId !== undefined) data.config = systems.includes(systemId);
+      api.register(moduleId, key, data);
     }
   }
 }

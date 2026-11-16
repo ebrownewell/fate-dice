@@ -1,7 +1,7 @@
 // The per-character log in a real world: what gets recorded, the log window,
 // the sheet button and GM refunds. Run with `npm run test:foundry`.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { joinWorld } from "../tools/foundry/session.js";
+import { activeSystem, joinWorld } from "../tools/foundry/session.js";
 
 const HERO = "Player A Hero";
 
@@ -36,17 +36,23 @@ const openLogRows = (/** @type {import("playwright").Page} */ page) =>
     }));
   }, HERO);
 
+// Uses dnd5e rolls: only runs against the dnd5e dev world.
+const SYSTEM = await activeSystem();
+const skip = SYSTEM !== "dnd5e";
+
 beforeAll(async () => {
+  if (skip) return;
   gm = await joinWorld();
   player = await joinWorld({ user: "Player A" });
 });
 
 afterAll(async () => {
+  if (skip) return;
   await player?.browser.close();
   await gm?.browser.close();
 });
 
-describe("what gets logged", () => {
+describe.skipIf(skip)("what gets logged", () => {
   it("records awards, spends and Fate Rerolls with who and the balance after", async () => {
     await reset(0);
     await gm.page.evaluate(
@@ -76,7 +82,7 @@ describe("what gets logged", () => {
   });
 });
 
-describe("the log window", () => {
+describe.skipIf(skip)("the log window", () => {
   it("shows the player their history, newest first, without refund buttons", async () => {
     await expect.poll(async () => (await openLogRows(player.page)).length).toBe(3);
     const rows = await openLogRows(player.page);
@@ -111,7 +117,7 @@ describe("the log window", () => {
   });
 });
 
-describe("refunds", () => {
+describe.skipIf(skip)("refunds", () => {
   it("lets the GM refund a spend from the log, and both clients see it", async () => {
     const spendId = (await logOf(gm.page))[1].id; // the plain spend of 1
     await gm.page.evaluate(

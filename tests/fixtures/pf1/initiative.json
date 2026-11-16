@@ -1,0 +1,44 @@
+{
+  "type": "check",
+  "style": 0,
+  "sound": "sounds/dice.wav",
+  "content": "<span class=\"flavor-text\">\n\n  Initiative Check\n\n</span>\n\n<div class=\"dice-roll\" data-action=\"expandRoll\">\n  <div class=\"dice-result\">\n    <h3 class=\"roll-total dice-total has-details\" data-natural=\"4\" data-bonus=\"0\" data-total=\"4\">\n      <i class=\"fa-solid fa-dice-d20\" inert></i>\n      <span class=\"natural\">4</span>\n      <span class=\"bonus\">+0</span>\n      <span class=\"equals\">⇒</span>\n      <span class=\"total\">4</span>\n    </h3>\n\n    <div class=\"dice-tooltip\">\n  <div class=\"wrapper\">\n    <section class=\"tooltip-part\">\n      <div class=\"dice\">\n        <header class=\"part-header flexrow\">\n          <span class=\"part-formula\">1d20</span>\n          <span class=\"part-flavor \">Check</span>\n          <span class=\"part-total\">4</span>\n        </header>\n        <ol class=\"dice-rolls\">\n          <li class=\"roll die d20\">4</li>\n        </ol>\n      </div>\n    </section>\n\n    <section class=\"tooltip-part\">\n      <div class=\"dice\">\n        <header class=\"part-header flexrow\">\n          <span class=\"part-formula\"></span>\n          <span class=\"part-flavor \">Initiative</span>\n          <span class=\"part-total\">\n            <span class=\"part-prefix\">+</span>0</span>\n        </header>\n      </div>\n    </section>\n    <section class=\"tooltip-part\">\n      <div class=\"dice\">\n        <header class=\"part-header flexrow\">\n          <span class=\"part-formula\"></span>\n          <span class=\"part-flavor \">Tiebreaker</span>\n          <span class=\"part-total\">\n            <span class=\"part-prefix\">+</span>0</span>\n        </header>\n      </div>\n    </section>\n  </div>\n</div>\n\n  </div>\n\n</div>",
+  "system": {
+    "subject": {
+      "core": "init"
+    },
+    "combat": "6bbFZuXIRGfgtL8a"
+  },
+  "speaker": {
+    "scene": "NUEDEFAULTSCENE0",
+    "actor": "DwJEARHMPHWGasB8",
+    "token": null,
+    "alias": "Player A Hero"
+  },
+  "flags": {
+    "core": {
+      "initiativeRoll": true
+    }
+  },
+  "rolls": [
+    "{\"class\":\"D20RollPF\",\"options\":{\"critical\":20,\"flavor\":\"Initiative Check\"},\"dice\":[],\"formula\":\"1d20 + 0[Initiative] + (0 / 100)[Tiebreaker]\",\"terms\":[{\"class\":\"Die\",\"options\":{\"flavor\":\"Check\"},\"evaluated\":true,\"number\":1,\"faces\":20,\"modifiers\":[],\"results\":[{\"result\":4,\"active\":true}]},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":\"Initiative\"},\"evaluated\":true,\"number\":0},{\"class\":\"OperatorTerm\",\"options\":{},\"evaluated\":true,\"operator\":\"+\"},{\"class\":\"ParentheticalTerm\",\"options\":{\"flavor\":\"Tiebreaker\"},\"evaluated\":true,\"term\":\"0 / 100\",\"roll\":{\"class\":\"RollPF\",\"options\":{},\"dice\":[],\"formula\":\"0 / 100\",\"terms\":[{\"class\":\"NumericTerm\",\"options\":{\"flavor\":\"Tiebreaker\"},\"evaluated\":true,\"number\":0},{\"class\":\"OperatorTerm\",\"options\":{\"flavor\":\"Tiebreaker\"},\"evaluated\":true,\"operator\":\"/\"},{\"class\":\"NumericTerm\",\"options\":{\"flavor\":\"Tiebreaker\"},\"evaluated\":true,\"number\":100}],\"total\":0,\"evaluated\":true}}],\"total\":4,\"evaluated\":true}"
+  ],
+  "_id": "i0U1nTgf1wsEma2U",
+  "author": "OhbQcY1xdZge6iBG",
+  "timestamp": 1794786864916,
+  "flavor": "",
+  "whisper": [],
+  "blind": false,
+  "emote": false,
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.351",
+    "systemId": "pf1",
+    "systemVersion": "11.11",
+    "createdTime": 1794786865041,
+    "modifiedTime": 1794786865041,
+    "lastModifiedBy": "OhbQcY1xdZge6iBG"
+  }
+}

@@ -3,6 +3,8 @@
 // fated version of a roll. Works on plain data (ChatMessage#toObject() and
 // Roll#toJSON()), so it is tested against recorded messages without Foundry.
 
+import { appendFateDie, isD20Term, parseRoll, readD20 } from "./common.js";
+
 /** @typedef {import("../rules/fateReroll.js").RollMode} RollMode */
 /** @typedef {import("../rules/fateReroll.js").FateRerollResult} FateRerollResult */
 
@@ -22,12 +24,6 @@
 /** @type {Record<string, RollMode>} */
 const MODES = { 1: "advantage", 0: "normal", "-1": "disadvantage" };
 
-/** @param {unknown} roll */
-const parseRoll = (roll) => (typeof roll === "string" ? JSON.parse(roll) : roll);
-
-/** @param {any} term */
-const isD20Term = (term) => term?.faces === 20 && Array.isArray(term.results);
-
 /**
  * @param {any} message Chat message data.
  * @returns {RollInfo | null} null if this isn't a d20 roll that can be fated.
@@ -41,11 +37,9 @@ function getRollInfo(message) {
   const die = roll.terms?.[0];
   if (!isD20Term(die)) return null;
 
-  const considered = die.results.filter((/** @type {any} */ r) => !r.rerolled);
-  const kept = considered.find((/** @type {any} */ r) => r.active && !r.discarded);
   const mode = MODES[String(roll.options?.advantageMode ?? die.options?.advantageMode ?? 0)];
-  if (!kept || !mode) return null;
-  if ((mode === "normal") !== (considered.length === 1)) return null;
+  const d20 = mode ? readD20(die, mode) : null;
+  if (!mode || !d20) return null;
 
   const kind = message.flags?.core?.initiativeRoll
     ? "initiative"
@@ -54,10 +48,9 @@ function getRollInfo(message) {
   return {
     kind,
     mode,
-    dice: considered.map((/** @type {any} */ r) => r.result),
-    keptNatural: kept.result,
+    ...d20,
     total: roll.total,
-    modifier: roll.total - kept.result,
+    modifier: roll.total - d20.keptNatural,
     critThreshold: die.options?.criticalSuccess ?? roll.options?.criticalSuccess ?? 20,
     target: typeof roll.options?.target === "number" ? roll.options.target : null,
     actorId,
@@ -77,40 +70,13 @@ function getRollInfo(message) {
  * @param {FateRerollResult} outcome
  */
 function buildFatedRoll(originalRoll, info, outcome) {
-  const roll = structuredClone(parseRoll(originalRoll));
-  const die = roll.terms[0];
-  const fateKept = outcome.kept === "fate";
-
-  if (fateKept) {
-    for (const result of die.results) {
-      if (result.rerolled) continue;
-      result.active = false;
-      result.discarded = true;
-    }
-    die.results.push({ result: outcome.fate.natural, active: true, fate: true });
-    roll.total = info.modifier + outcome.result.value;
-  } else {
-    die.results.push({ result: outcome.fate.natural, active: false, discarded: true, fate: true });
-  }
-
-  if (fateKept && outcome.result.bonus > 0) {
-    roll.terms.push(
-      { class: "OperatorTerm", options: {}, evaluated: true, operator: "+" },
-      {
-        class: "NumericTerm",
-        options: { flavor: "Fate" },
-        evaluated: true,
-        number: outcome.result.bonus,
-      },
-    );
-    roll.formula = `${roll.formula} + ${outcome.result.bonus}[Fate]`;
-    for (const options of [die.options, roll.options]) {
+  const { roll, boosted } = appendFateDie(originalRoll, info, outcome);
+  if (boosted) {
+    for (const options of [roll.terms[0].options, roll.options]) {
       options.criticalSuccess = null;
       options.criticalFailure = null;
     }
   }
-
-  roll.options.fateDice = outcome;
   return roll;
 }
 

@@ -48,6 +48,16 @@ const summary = await page.evaluate(async (testGm) => {
     throw new Error("No Longsword found in any Item compendium");
   }
 
+  // pf2e: roll dialogs ignore skipDialog unless the user's preference is off.
+  if (game.system.id === "pf2e") {
+    for (const name of [testGm, ...PLAYERS]) {
+      await game.users.getName(name)?.update({
+        "flags.pf2e.settings.showCheckDialogs": false,
+        "flags.pf2e.settings.showDamageDialogs": false,
+      });
+    }
+  }
+
   const longsword = await findLongsword();
   for (const playerName of PLAYERS) {
     const user = game.users.getName(playerName);
@@ -61,8 +71,8 @@ const summary = await page.evaluate(async (testGm) => {
       });
     }
     if (!actor.items.getName("Longsword")) await actor.createEmbeddedDocuments("Item", [longsword]);
-    // Classless characters have 0 max HP; give them some so revives and healing work.
-    if (actor.system.attributes.hp.max < 20) {
+    // dnd5e: classless characters have 0 max HP; give them some so revives and healing work.
+    if (game.system.id === "dnd5e" && actor.system.attributes.hp.max < 20) {
       await actor.update({ "system.attributes.hp.max": 20, "system.attributes.hp.value": 20 });
     }
     if (user.character?.id !== actor.id) await user.update({ character: actor.id });

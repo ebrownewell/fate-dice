@@ -1,7 +1,17 @@
 # Fate Dice
 
 A Foundry VTT (v13) module for a hero-point style **Fate Dice** system.
-dnd5e comes first; pf2e and pf1e are planned via system adapters.
+
+## Supported systems
+
+The Fate Dice pool, log, HUD, GM panel, shop and nominations work in any system. The
+**Fate Reroll** button needs a system adapter:
+
+| System       | Fate Reroll works on                                           | Notes                                                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dnd5e (5.3)  | attacks, checks, saves, skills, tools, initiative, death saves | advantage/disadvantage as described below                                                                                                                                                                                                                             |
+| pf2e (7.12)  | checks, saves, perception, strikes, initiative                 | fortune = advantage, misfortune = disadvantage; the degree of success is recomputed (a boosted fate die never counts as a natural 20 or 1). Rolls whose degree was adjusted by an ability get no button. pf2e's own Hero Point reroll is hidden by default (setting). |
+| pf1e (11.11) | skills, saves, ability checks, initiative                      | attack cards (full attacks, crit confirmation) are not supported yet                                                                                                                                                                                                  |
 
 ## Rules (defaults; GM-configurable)
 

@@ -7,6 +7,7 @@ declare const Hooks: {
   once(hook: string, fn: (...args: any[]) => void): number;
   on(hook: string, fn: (...args: any[]) => void): number;
   callAll(hook: string, ...args: unknown[]): boolean;
+  call(hook: string, ...args: unknown[]): boolean;
 };
 
 declare const game: any;

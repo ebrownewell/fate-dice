@@ -48,6 +48,12 @@ Run through this before each release. It covers what automated tests can't reach
 - [ ] Importing a real shared file shows a sensible preview; warnings are readable.
 - [ ] The purchase announcement in chat looks right, with and without a note.
 
+### pf2e and pf1e
+
+- [ ] pf2e: a fated check's result line (Success/Failure…) and colours look right; DC and margin are shown only to the GM as before.
+- [ ] pf2e: the chat right-click menu no longer offers "Reroll using a Hero Point" (and does when the setting is off).
+- [ ] pf1e: fated skills/saves look right; attack cards have no button.
+
 ### Nominations
 
 - [ ] The nominate dialog lists the right characters and reads clearly.

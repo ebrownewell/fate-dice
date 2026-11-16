@@ -48,6 +48,10 @@
       "NominationLimit": {
         "Name": "Nominations per player per session",
         "Hint": "How many nominations each player can make each session (0 for no limit)."
+      },
+      "HidePf2eHeroPointReroll": {
+        "Name": "Hide pf2e's Hero Point reroll",
+        "Hint": "Remove pf2e's \"Reroll using a Hero Point\" from chat cards, so players use Fate Dice instead."
       }
     },
     "Errors": {

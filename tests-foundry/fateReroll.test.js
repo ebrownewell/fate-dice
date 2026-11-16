@@ -1,7 +1,7 @@
 // End-to-end Fate Reroll in a real dnd5e world: a player rolls, clicks the
 // button, the GM's client does the work. Run with `npm run test:foundry`.
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { joinWorld } from "../tools/foundry/session.js";
+import { activeSystem, joinWorld } from "../tools/foundry/session.js";
 import { deathStateAfter } from "../scripts/rules/deathSave.js";
 
 const HERO = "Player A Hero";
@@ -102,12 +102,18 @@ const fatedResultOf = async (
   }, id);
 };
 
+// Uses dnd5e rolls: only runs against the dnd5e dev world.
+const SYSTEM = await activeSystem();
+const skip = SYSTEM !== "dnd5e";
+
 beforeAll(async () => {
+  if (skip) return;
   gm = await joinWorld();
   player = await joinWorld({ user: "Player A" });
 });
 
 afterAll(async () => {
+  if (skip) return;
   await gm?.page.evaluate(() =>
     Promise.all(game.combats.map((/** @type {any} */ c) => c.delete())),
   );
@@ -119,7 +125,7 @@ beforeEach(async () => {
   await setPoints(gm.page, 2);
 });
 
-describe("Fate Reroll button", () => {
+describe.skipIf(skip)("Fate Reroll button", () => {
   it("appears on the player's own d20 roll, showing the cost", async () => {
     const id = await rollAs(player.page, "attack");
     await expect
@@ -158,7 +164,7 @@ describe("Fate Reroll button", () => {
   });
 });
 
-describe("clicking Fate Reroll", () => {
+describe.skipIf(skip)("clicking Fate Reroll", () => {
   it("spends a Fate Die and posts a correct fated roll from the player", async () => {
     const id = await rollAs(player.page, "attack");
     await expect
@@ -215,7 +221,7 @@ describe("clicking Fate Reroll", () => {
   });
 });
 
-describe("Fate Reroll on initiative", () => {
+describe.skipIf(skip)("Fate Reroll on initiative", () => {
   it("updates the combat tracker to the fated total", async () => {
     await gm.page.evaluate(async (name) => {
       for (const c of game.combats) await c.delete();
@@ -235,7 +241,7 @@ describe("Fate Reroll on initiative", () => {
   });
 });
 
-describe("Fate Reroll on death saves", () => {
+describe.skipIf(skip)("Fate Reroll on death saves", () => {
   /** Put the hero at 0 HP with the given counts, and wait until the player sees it. */
   const makeDying = async (success = 0, failure = 0) => {
     const onGm = await setDying(success, failure);

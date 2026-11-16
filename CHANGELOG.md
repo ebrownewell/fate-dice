@@ -6,6 +6,9 @@ All notable changes to this module are documented here. Versions follow [Semanti
 
 ### Added
 
+- **pf2e support** (7.12, the last pf2e for Foundry v13): Fate Reroll on checks, saves, perception, strikes and initiative. Fortune/misfortune count as advantage/disadvantage; the degree of success is recomputed and shown on the card. New setting (pf2e only, on by default): hide pf2e's own "Reroll using a Hero Point".
+- **pf1e support** (11.11): Fate Reroll on skills, saves, ability checks and initiative. Attack cards are not supported yet.
+- System-specific settings only appear in their system's settings menu (e.g. death saves in dnd5e).
 - **Nominations**: a player nominates another player's character (never their own) for a Fate Die, with a reason, from the shop's "Nominate…" button.
   - Setting **Nominations**: off, **GM approves** (default), or **players vote**. Setting **Nominations per player per session** (default 1; 0 = unlimited).
   - GM approval: the GM gets Approve / Deny on the chat card.

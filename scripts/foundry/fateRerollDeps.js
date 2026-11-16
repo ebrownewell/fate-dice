@@ -22,15 +22,25 @@ export function createFoundryFateRerollDeps({ service }) {
       return roll.dice[0].results[0].result;
     },
 
-    /** @param {{ original: any, rollData: any, outcome: any, userId: string }} args */
-    async createFatedMessage({ original, rollData, outcome, userId }) {
-      const data = buildFatedMessageData({
+    /** @param {{ original: any, rollData: any, outcome: any, userId: string, info: any }} args */
+    async createFatedMessage({ original, rollData, outcome, userId, info }) {
+      let data = buildFatedMessageData({
         original,
         rollData,
         outcome,
         userId,
         flavorSuffix: game.i18n.localize("FATEDICE.Chat.FateReroll"),
       });
+      // Some systems (pf2e) also show the outcome in the card's text.
+      const adapter = /** @type {any} */ (getSystemAdapter(game.system.id));
+      if (adapter?.adjustFatedMessage) {
+        data = adapter.adjustFatedMessage(data, {
+          info,
+          outcome,
+          rollData,
+          localize: (/** @type {string} */ key) => game.i18n.localize(key),
+        });
+      }
       return ChatMessage.create(data);
     },
 

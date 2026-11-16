@@ -40,7 +40,7 @@ export async function joinWorld({
 
   try {
     await page.goto(`${FOUNDRY_URL}/join`);
-    await page.selectOption('select[name="userid"]', { label: user }, { timeout: 10_000 });
+    await page.selectOption('select[name="userid"]', { label: user }, { timeout: 30_000 });
     await page.fill('input[name="password"]', password);
     await Promise.all([page.waitForURL(/\/game$/), page.click('button[name="join"]')]);
     await waitForReady(page);
@@ -52,9 +52,21 @@ export async function joinWorld({
   return { browser, page };
 }
 
+/**
+ * The game system of the world the server is running (e.g. "dnd5e"), from
+ * Foundry's status endpoint. Lets tests skip themselves on other systems.
+ * @returns {Promise<string | null>}
+ */
+export async function activeSystem() {
+  const response = await fetch(`${FOUNDRY_URL}/api/status`);
+  const status = await response.json();
+  return status.active ? status.system : null;
+}
+
 /** @param {import("playwright").Page} page */
 export async function waitForReady(page) {
   await page.waitForFunction(() => typeof game !== "undefined" && game?.ready === true, null, {
-    timeout: 60_000,
+    // The first load after a world launches can take over a minute.
+    timeout: 120_000,
   });
 }

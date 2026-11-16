@@ -18,6 +18,7 @@ const DEFAULTS = {
   bonusAmount: 10,
   rerollOnInitiative: true,
   rerollOnDeathSaves: true,
+  hidePf2eHeroPointReroll: true,
   nominationMode: "gm",
   nominationLimit: 1,
 };
@@ -35,6 +36,11 @@ describe("SETTING_DEFINITIONS", () => {
       expect(def.scope).toBe("world");
       expect(def.config).toBe(true);
     }
+  });
+
+  it("marks system-specific settings with the systems they apply to", () => {
+    expect(SETTING_DEFINITIONS.hidePf2eHeroPointReroll.systems).toEqual(["pf2e"]);
+    expect(SETTING_DEFINITIONS.rerollOnDeathSaves.systems).toEqual(["dnd5e"]);
   });
 
   it("offers nominations off, by GM approval, or by party vote", () => {
@@ -102,6 +108,29 @@ describe("registerSettings", () => {
       "maxPoints",
       SETTING_DEFINITIONS.maxPoints,
     );
+  });
+});
+
+describe("registerSettings for a specific system", () => {
+  const registered = (/** @type {string} */ systemId) => {
+    const api = { register: vi.fn(), get: vi.fn() };
+    registerSettings(api, "fate-dice", systemId);
+    return Object.fromEntries(api.register.mock.calls.map(([, key, def]) => [key, def]));
+  };
+
+  it("shows a system-specific setting only in that system's settings menu", () => {
+    expect(registered("pf2e").hidePf2eHeroPointReroll.config).toBe(true);
+    expect(registered("dnd5e").hidePf2eHeroPointReroll.config).toBe(false);
+    expect(registered("dnd5e").rerollOnDeathSaves.config).toBe(true);
+    expect(registered("pf1").rerollOnDeathSaves.config).toBe(false);
+  });
+
+  it("still registers every setting, so reading one never fails", () => {
+    expect(Object.keys(registered("pf1"))).toContain("hidePf2eHeroPointReroll");
+  });
+
+  it("does not pass the systems list on to Foundry", () => {
+    expect(registered("pf2e").hidePf2eHeroPointReroll).not.toHaveProperty("systems");
   });
 });
 
