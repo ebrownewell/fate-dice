@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { PACKAGE_PATHS, releaseManifest } from "../tools/release/manifest.js";
+import { PACKAGE_PATHS, releaseChannel, releaseManifest } from "../tools/release/manifest.js";
 import { changelogSection } from "../tools/release/notes.js";
 
 const root = new URL("../", import.meta.url);
@@ -16,14 +16,20 @@ describe("module.json", () => {
     for (const file of files) expect(existsSync(new URL(file, root)), file).toBe(true);
   });
 
-  it("is installable from GitHub releases", () => {
+  it("is installable from its Foundry version's release channel", () => {
     expect(manifest.url).toBe("https://github.com/ebrownewell/fate-dice");
     expect(manifest.manifest).toBe(
-      "https://github.com/ebrownewell/fate-dice/releases/latest/download/module.json",
+      `https://github.com/ebrownewell/fate-dice/releases/download/${releaseChannel(manifest)}/module.json`,
     );
     expect(manifest.download).toBe(
       `https://github.com/ebrownewell/fate-dice/releases/download/v${manifest.version}/module.zip`,
     );
+  });
+
+  it("supports exactly one Foundry version, so each release line stays separate", () => {
+    const major = manifest.compatibility.minimum.split(".")[0];
+    expect(String(manifest.compatibility.maximum)).toBe(major);
+    expect(String(manifest.compatibility.verified).split(".")[0]).toBe(major);
   });
 
   it("declares the MIT license, which exists", () => {
@@ -137,5 +143,16 @@ describe("changelogSection", () => {
   it("finds the current version's notes in the real changelog", () => {
     const real = readFileSync(new URL("CHANGELOG.md", root), "utf8");
     expect(changelogSection(real, manifest.version).length).toBeGreaterThan(0);
+  });
+});
+
+describe("releaseChannel", () => {
+  it("is named after the Foundry version a release supports", () => {
+    expect(releaseChannel({ compatibility: { minimum: "13" } })).toBe("foundry-v13");
+    expect(releaseChannel({ compatibility: { minimum: "14.360" } })).toBe("foundry-v14");
+  });
+
+  it("refuses a manifest without a minimum Foundry version", () => {
+    expect(() => releaseChannel({ compatibility: {} })).toThrow(/minimum/);
   });
 });

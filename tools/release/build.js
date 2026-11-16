@@ -6,7 +6,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { PACKAGE_PATHS, releaseManifest } from "./manifest.js";
+import { PACKAGE_PATHS, releaseChannel, releaseManifest } from "./manifest.js";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const tag = process.argv[2];
@@ -29,4 +29,7 @@ writeFileSync(`${dist}module.json`, json);
 
 // Foundry expects module.json at the top level of the zip.
 execFileSync("zip", ["-qr", "-X", `${dist}module.zip`, "."], { cwd: stage });
-console.log(`Built dist/module.zip and dist/module.json for ${manifest.version}`);
+writeFileSync(`${dist}channel.txt`, `${releaseChannel(manifest)}\n`);
+console.log(
+  `Built dist/module.zip and dist/module.json for ${manifest.version} (${releaseChannel(manifest)})`,
+);

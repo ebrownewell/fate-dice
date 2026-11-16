@@ -17,6 +17,18 @@ export const PACKAGE_PATHS = [
 ];
 
 /**
+ * The release channel a manifest belongs to, named after the Foundry version it
+ * supports (e.g. "foundry-v13"). Each channel has a release whose module.json
+ * always points at that line's newest version.
+ * @param {any} manifest
+ */
+export function releaseChannel(manifest) {
+  const minimum = manifest?.compatibility?.minimum;
+  if (!minimum) throw new Error("module.json needs compatibility.minimum");
+  return `foundry-v${String(minimum).split(".")[0]}`;
+}
+
+/**
  * module.json for a release: the tag's version and that release's download.
  * @param {any} manifest The repository's module.json.
  * @param {string} tag e.g. "v1.2.3"

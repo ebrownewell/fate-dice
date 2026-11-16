@@ -1,7 +1,8 @@
 name: Release
 
-# Push a version tag (e.g. v0.1.0) whose version matches module.json to
-# publish a release that Foundry can install from the manifest URL.
+# Push a version tag (e.g. v1.0.1) whose version matches module.json. This
+# publishes the release and points that Foundry version's channel at it
+# (foundry-v13 or foundry-v14), which is where the manifest URLs live.
 on:
   push:
     tags: ["v*"]
@@ -27,4 +28,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >
           gh release create "$GITHUB_REF_NAME" dist/module.zip dist/module.json
-          --title "Fate Dice $GITHUB_REF_NAME" --notes-file dist/notes.md
+          --title "Fate Dice $GITHUB_REF_NAME" --notes-file dist/notes.md --latest=false
+      - name: Update the release channel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          channel=$(cat dist/channel.txt)
+          gh release view "$channel" > /dev/null 2>&1 || gh release create "$channel" \
+            --title "Fate Dice for ${channel#foundry-} (always the newest)" \
+            --notes "Install link for this Foundry version: https://github.com/${GITHUB_REPOSITORY}/releases/download/${channel}/module.json" \
+            --latest=false
+          gh release upload "$channel" dist/module.json dist/module.zip --clobber

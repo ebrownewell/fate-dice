@@ -1,7 +1,7 @@
 {
   "name": "fate-dice",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Dev tooling for the Fate Dice Foundry VTT module. The module itself ships as plain ES modules with no build step.",
   "type": "module",
   "scripts": {

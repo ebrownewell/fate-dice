@@ -5,10 +5,11 @@ Dice and spend them to reroll a d20, or on anything else the GM puts in the shop
 
 ## Install
 
-In Foundry go to Add-on Modules > Install Module, paste this manifest URL and install:
+In Foundry go to Add-on Modules > Install Module, paste the manifest URL for your Foundry version
+and install:
 
 ```
-https://github.com/ebrownewell/fate-dice/releases/latest/download/module.json
+https://github.com/ebrownewell/fate-dice/releases/download/foundry-v13/module.json
 ```
 
 Then turn it on in your world. A GM has to be logged in for Fate Dice to be spent or awarded.
@@ -77,9 +78,11 @@ To work on it, symlink this folder into your Foundry `Data/modules` folder.
 
 ## Releasing
 
-Bump the version in `module.json` and `package.json`, add a section for it to `CHANGELOG.md`, then
-tag it and push (`git tag v0.2.0 && git push origin main v0.2.0`). GitHub Actions builds the zip
-and publishes the release.
+There's a release line per Foundry version: the `foundry-v13` branch (1.x) and `main` for v14
+(2.x). Bump the version in `module.json` and `package.json`, add a section for it to
+`CHANGELOG.md`, then tag it and push the branch and tag (`git tag v1.0.1 && git push origin
+foundry-v13 v1.0.1`). GitHub Actions builds the zip, publishes the release and updates that
+Foundry version's install link.
 
 ## License
 
